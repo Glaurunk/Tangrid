@@ -1,0 +1,39 @@
+body {
+    background-color: var(--c-black);
+    color: var(--c-white);
+    .container {
+        #left-side {
+            width: 100%;
+            background: grey;
+        }
+        #middle-side {
+            #cpu-hand {
+                //border: 1px solid white;
+            }
+            #grid {
+                display: flex;
+                svg {                    
+                    border: 1px solid white;
+                }
+                height: 500px;
+                width: 100%;
+            }
+            #player-hand {
+                //border: 1px solid white
+            }
+        }
+        #right-side {
+            width: 100%;
+            background-color: grey;
+        }
+    }
+
+    .small-window-msg {
+        margin: 2rem auto;
+        width: 80%;
+        border: 2px solid var(--c-flip);
+        color: var(--c-white);
+        padding: 2rem 1rem;
+        border-radius: 5px;
+    }
+}

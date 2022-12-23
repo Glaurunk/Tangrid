@@ -1,0 +1,39 @@
+:root {
+  --c-one: #fa6400;
+  --c-two: #9600fa;
+  --c-joker: #af1414;
+  --c-flip: #333333;
+  --c-white: #ffffff;
+  --c-black: #000000;
+}
+
+body {
+  background-color: var(--c-black);
+  color: var(--c-white);
+}
+body .container #left-side {
+  width: 100%;
+  background: grey;
+}
+body .container #middle-side #grid {
+  display: flex;
+  height: 500px;
+  width: 100%;
+}
+body .container #middle-side #grid svg {
+  border: 1px solid white;
+}
+body .container #right-side {
+  width: 100%;
+  background-color: grey;
+}
+body .small-window-msg {
+  margin: 2rem auto;
+  width: 80%;
+  border: 2px solid var(--c-flip);
+  color: var(--c-white);
+  padding: 2rem 1rem;
+  border-radius: 5px;
+}
+
+/*# sourceMappingURL=main.css.map */
