@@ -1,30 +1,62 @@
 body {
     background-color: var(--c-black);
     color: var(--c-white);
-    .container {
+    .content {
+        display: flex;
+        width: 100%;
         #left-side {
             width: 100%;
-            background: grey;
         }
         #middle-side {
-            #cpu-hand {
-                //border: 1px solid white;
+            #player2-side {
+                text-align: center;
+                margin: 1rem 0 2rem;
+                #player2-hand {
+                    display: flex;
+                    width: fit-content;
+                    margin: 1rem auto 0;
+                    .card {                    
+                        margin: 0 .5rem;
+                    }
+                }
             }
             #grid {
                 display: flex;
-                svg {                    
-                    border: 1px solid white;
-                }
-                height: 500px;
-                width: 100%;
+                margin: 0 auto;
+                height: 520px;
+                width: fit-content;
             }
-            #player-hand {
-                //border: 1px solid white
+            #player1-side {
+                text-align: center;
+                #player1-hand {
+                    display: flex;
+                    width: fit-content;
+                    margin: 1rem auto 0;
+                    .card {
+                        margin: 0 .5rem;
+                    }
+                }
             }
         }
         #right-side {
             width: 100%;
-            background-color: grey;
+            #score  {
+                margin: 150px auto;
+                text-align: center;
+            }
+            #messages {
+                padding: 1rem 3rem;
+                .message {
+                    font-size: 1.5rem;
+                    text-align: center;
+                    padding: 1.5rem;
+                    border: 1px solid var(--c-white);
+                    border-radius: 8px;
+                    opacity: 0;
+                    animation-name: messageFade;
+                    animation-duration: 5s;
+                }
+            }
         }
     }
 
@@ -36,4 +68,17 @@ body {
         padding: 2rem 1rem;
         border-radius: 5px;
     }
+
+    #credits {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+    }
 }
+
+@keyframes messageFade {
+    0%   { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+

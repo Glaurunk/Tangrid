@@ -5,27 +5,68 @@
   --c-flip: #333333;
   --c-white: #ffffff;
   --c-black: #000000;
+  --c-selected: #90f808;
 }
 
 body {
   background-color: var(--c-black);
   color: var(--c-white);
 }
-body .container #left-side {
-  width: 100%;
-  background: grey;
-}
-body .container #middle-side #grid {
+body .content {
   display: flex;
-  height: 500px;
   width: 100%;
 }
-body .container #middle-side #grid svg {
-  border: 1px solid white;
-}
-body .container #right-side {
+body .content #left-side {
   width: 100%;
-  background-color: grey;
+}
+body .content #middle-side #player2-side {
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+body .content #middle-side #player2-side #player2-hand {
+  display: flex;
+  width: fit-content;
+  margin: 1rem auto 0;
+}
+body .content #middle-side #player2-side #player2-hand .card {
+  margin: 0 0.5rem;
+}
+body .content #middle-side #grid {
+  display: flex;
+  margin: 0 auto;
+  height: 520px;
+  width: fit-content;
+}
+body .content #middle-side #player1-side {
+  text-align: center;
+}
+body .content #middle-side #player1-side #player1-hand {
+  display: flex;
+  width: fit-content;
+  margin: 1rem auto 0;
+}
+body .content #middle-side #player1-side #player1-hand .card {
+  margin: 0 0.5rem;
+}
+body .content #right-side {
+  width: 100%;
+}
+body .content #right-side #score {
+  margin: 150px auto;
+  text-align: center;
+}
+body .content #right-side #messages {
+  padding: 1rem 3rem;
+}
+body .content #right-side #messages .message {
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 1.5rem;
+  border: 1px solid var(--c-white);
+  border-radius: 8px;
+  opacity: 0;
+  animation-name: messageFade;
+  animation-duration: 5s;
 }
 body .small-window-msg {
   margin: 2rem auto;
@@ -34,6 +75,66 @@ body .small-window-msg {
   color: var(--c-white);
   padding: 2rem 1rem;
   border-radius: 5px;
+}
+body #credits {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+@keyframes messageFade {
+  0% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.card {
+  position: relative;
+  perspective: 1000px;
+  width: 100px;
+  height: 100px;
+}
+.card.selected .card__inner {
+  border: 3px solid var(--c-selected);
+}
+.card.flipped .card__inner {
+  transform: rotateY(180deg);
+}
+.card .card__inner {
+  border: 1px solid var(--c-white);
+  transition: transform 0.25s ease-in-out;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  width: 100px;
+  height: 100px;
+}
+.card .card__inner .card__front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
+}
+.card .card__inner .card__back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: var(--c-flip);
+  justify-content: center;
+  align-items: center;
+  backface-visibility: hidden;
 }
 
 /*# sourceMappingURL=main.css.map */

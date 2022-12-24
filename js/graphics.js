@@ -1,6 +1,30 @@
-// Draws an svg tile image
+// Draws an svg tile image inside a flippable parent card element
 function DrawTile(tile,parent)
 {
+    //Create the card element
+    const card = document.createElement('div');
+    card.id = tile.id;
+    card.dataset.label = tile.label;
+    if (tile.facing == 1) card.classList.add('flipped');
+    //add event listener
+    card.addEventListener('click', ()=> {
+        cards.forEach(card => card.classList.remove('selected'));
+        card.classList.add('selected');
+        console.log("selected tile " + card.dataset.label + " with id " + card.id);
+    });
+    card.classList.add('card');
+    parent.appendChild(card);
+
+    //Create the inner card content
+    const inner = document.createElement('div');
+    inner.classList.add('card__inner');
+    card.appendChild(inner);
+
+    // create the front side
+    const front = document.createElement('div');
+    front.classList.add('card__front');
+    inner.appendChild(front);
+
     // Draw the SVG
     const xmlns = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(xmlns, 'svg');
@@ -8,8 +32,8 @@ function DrawTile(tile,parent)
     svg.setAttributeNS(null, "width", TILE_SIZE);
     svg.setAttributeNS(null, "height", TILE_SIZE);
     svg.style.display = "block";
-    svg.dataset.id = tile.id;
-    //svg.dataset.posx = tile.id;
+     // append the svg to the front
+     front.append(svg);
 
     // Draw the top triangle
     const gtop = document.createElementNS(xmlns,'g');
@@ -51,11 +75,26 @@ function DrawTile(tile,parent)
     polygonl.setAttributeNS(null, 'points','0,0 50,50 0,100');
     gleft.appendChild(polygonl);
     svg.appendChild(gleft);
-    
-    parent.appendChild(svg);
+   
+    // Add the back
+    const back = document.createElement('div');
+    back.classList.add('card__back');
+    inner.appendChild(back);
+    //  create the back side tile
+    const grect = document.createElementNS(xmlns,'g');
+    const rect = document.createElementNS(xmlns,'polygon');
+    rect.setAttributeNS(null, 'display','inline');
+    // rect.setAttributeNS(null, 'stroke',tile.lines);
+    // rect.setAttributeNS(null, 'stroke-width',1);
+    rect.setAttributeNS(null, 'fill', C_GREY);
+    rect.setAttributeNS(null, 'points','0,0, 0,100, 100,0, 100,100');
+    grect.appendChild(rect);
+    back.appendChild(grect);
+
+    if (tile.side == 1) inner.style.transform = "rotate(180deg)";
 }
 
-// Draws the initial grid
+// Draws the gridTiles array inside the grid row elements
 function DrawGrid()
 {
     for (let x=0; x<GRID_SIZE; x++)
@@ -64,5 +103,22 @@ function DrawGrid()
         {
             DrawTile(gridTiles[x +y*GRID_SIZE], document.getElementById("grid-row-" + y));
         }
+    }
+}
+
+// Draws a players hand on the screen
+function DrawPlayerHand(player=0)
+{
+    if (player == 1 || player == 0)
+    {
+        p1Hand.forEach(tile => {
+            DrawTile(tile, p1handDiv);
+        })
+    }
+    if (player == 2 || player == 0)
+    {
+        p2Hand.forEach(tile => {
+            DrawTile(tile, p2handDiv);
+        })
     }
 }

@@ -12,13 +12,12 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="container">
-        <div id="left-side">
-            
-        </div>
+    <div class="content">
+        <div id="left-side"></div>
         <div id="middle-side">
-            <div id="cpu-hand">
-                <canvas width="1000" height="150"></canvas>
+            <div id="player2-side">
+                <h3>Player 2</h3>
+                <div id="player2-hand"></div>
             </div>
             <div id="grid">
                 <div id="grid-row-0"></div>
@@ -27,19 +26,29 @@
                 <div id="grid-row-3"></div>
                 <div id="grid-row-4"></div>
             </div>
-            <div id="player-hand">
-                <canvas width="1000" height="150"></canvas>
+            <div id="player1-side">
+                <h3>Player 1</h3>
+                <div id="player1-hand"></div>
             </div>
         </div>
         <div id="right-side">
-
+            <div id="score">
+                <h3>SCORE</h3>
+                <h1>4 | 3</h1>
+            </div>
+            <div id="messages">
+                
+            </div>
         </div>
+        <p id="credits">Designed and created by <a href="https://www.deepseacoding.com">deepSeaCoding.com</a> &copy;<span id="year"></span></p>
     </div>
     
     <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="js/popper.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="js/helpers.js"></script>
     <script type="text/javascript" src="js/definitions.js"></script>
+    <script type="text/javascript" src="js/mechanics.js"></script>
     <script type="text/javascript" src="js/graphics.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 </body>
