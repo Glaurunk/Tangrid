@@ -3,6 +3,7 @@
     perspective: 1000px;
     width: 100px;
     height: 100px;
+    border: 0;
     &.selected {
       .card__inner {
         border: 3px solid var(--c-selected);

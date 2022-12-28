@@ -1,64 +1,118 @@
 :root {
-  --c-one: #fa6400;
-  --c-two: #9600fa;
-  --c-joker: #af1414;
+  --c-one: #7E67A4;
+  --c-two: #5B88C4;
+  --c-joker: #DE9133;
   --c-flip: #333333;
   --c-white: #ffffff;
   --c-black: #000000;
-  --c-selected: #90f808;
+  --c-selected: #ffda09;
 }
 
 body {
   background-color: var(--c-black);
   color: var(--c-white);
 }
-body .content {
+body #content {
+  position: relative;
   display: flex;
   width: 100%;
 }
-body .content #left-side {
+body #content #left-side {
   width: 100%;
 }
-body .content #middle-side #player2-side {
+body #content #left-side #panel {
+  margin-top: 30%;
+  text-align: center;
+}
+body #content #left-side #panel button {
+  width: 50%;
+  padding: 0.5rem 0;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+body #content #left-side #panel button:disabled {
+  color: var(--c-white);
+}
+body #content #middle-side #player2-side {
+  position: relative;
   text-align: center;
   margin: 1rem 0 2rem;
 }
-body .content #middle-side #player2-side #player2-hand {
+body #content #middle-side #player2-side #player2-thinking {
+  width: 75%;
+  padding: 1rem;
+  border: 1px solid var(--c-white);
+  background-color: var(--c-two);
+  opacity: 0.98;
+  position: absolute;
+  text-align: center;
+  top: -100px;
+  transition: 0.5s;
+  left: 50%;
+  z-index: 2;
+  border-radius: 5px;
+  transform: translateX(-50%);
+}
+body #content #middle-side #player2-side #player2-thinking.shown {
+  top: 65px;
+  transition: 0.5s;
+}
+body #content #middle-side #player2-side #player2-hand {
+  width: 820px;
   display: flex;
-  width: fit-content;
+  justify-content: center;
   margin: 1rem auto 0;
 }
-body .content #middle-side #player2-side #player2-hand .card {
+body #content #middle-side #player2-side #player2-hand .card {
   margin: 0 0.5rem;
 }
-body .content #middle-side #grid {
+body #content #middle-side #grid {
+  position: relative;
   display: flex;
   margin: 0 auto;
   height: 520px;
-  width: fit-content;
+  width: 820px;
+  justify-content: center;
 }
-body .content #middle-side #player1-side {
+body #content #middle-side #grid #score-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 820px;
+  height: 520px;
+}
+body #content #middle-side #player1-side {
   text-align: center;
 }
-body .content #middle-side #player1-side #player1-hand {
+body #content #middle-side #player1-side #player1-hand {
   display: flex;
-  width: fit-content;
+  width: 820px;
   margin: 1rem auto 0;
+  justify-content: center;
 }
-body .content #middle-side #player1-side #player1-hand .card {
+body #content #middle-side #player1-side #player1-hand .card {
   margin: 0 0.5rem;
 }
-body .content #right-side {
+body #content #right-side {
   width: 100%;
 }
-body .content #right-side #score {
+body #content #right-side #time-div {
+  text-align: center;
+  margin: 60px 0 20px;
+  font-size: 1.2rem;
+}
+body #content #right-side #now-playing {
+  text-align: center;
+  font-size: 1.2rem;
+}
+body #content #right-side #score {
   margin: 150px auto;
   text-align: center;
 }
-body .content #right-side #messages {
+body #content #right-side #messages {
   padding: 1rem 3rem;
 }
-body .content #right-side #messages .message {
+body #content #right-side #messages .message {
   font-size: 1.5rem;
   text-align: center;
   padding: 1.5rem;
@@ -75,11 +129,6 @@ body .small-window-msg {
   color: var(--c-white);
   padding: 2rem 1rem;
   border-radius: 5px;
-}
-body #credits {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
 }
 
 @keyframes messageFade {
@@ -98,6 +147,7 @@ body #credits {
   perspective: 1000px;
   width: 100px;
   height: 100px;
+  border: 0;
 }
 .card.selected .card__inner {
   border: 3px solid var(--c-selected);
@@ -135,6 +185,57 @@ body #credits {
   justify-content: center;
   align-items: center;
   backface-visibility: hidden;
+}
+
+#home-screen {
+  display: block;
+  position: absolute;
+  width: 90%;
+  height: 90vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 0.5rem;
+  z-index: 9;
+  background-color: rgba(40, 40, 63, 0.98);
+}
+#home-screen.hidden {
+  top: -60%;
+  transition: 1s;
+}
+#home-screen .img-cont {
+  width: 100%;
+  text-align: center;
+}
+#home-screen .img-cont img {
+  margin-top: 75px;
+  max-width: 1000px;
+  margin-bottom: 1.5rem;
+}
+#home-screen #home-message {
+  text-align: center;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 50%;
+  padding: 5rem 10rem;
+  border-radius: 0.5rem;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--c-white);
+  color: var(--c-white);
+}
+#home-screen #home-message button {
+  width: 50%;
+  padding: 0.5rem 0;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+#home-screen #credits {
+  text-align: center;
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /*# sourceMappingURL=main.css.map */

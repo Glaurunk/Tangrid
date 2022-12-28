@@ -12,14 +12,34 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="content">
-        <div id="left-side"></div>
+    <div id="content">
+        <div id="home-screen">
+            <div class="img-cont">
+                <img class="img-fluid" src="images/tangrid_logo.png" alt="logo">
+                <h4>A game of colors and triangles</h4>
+            </div>
+            <div id="home-message">
+                <h1>Press Start!</h1>
+                <button class="btn"id="start-btn" type="button">Start</button>
+            </div>
+            <p id="credits">Designed and created by <a href="https://www.deepseacoding.com">deepSeaCoding.com</a> &copy;<span id="year"></span></p>
+        </div>
+        
+        <div id="left-side">
+            <div id="panel">
+                <button class="btn"id="rotate-btn" type="button" disabled>Rotate</button>
+                <button class="btn"id="undo-btn" type="button" disabled>Undo</button>
+                <button class="btn"id="discard-btn" type="button" disabled>Discard & Pass</button>
+            </div>
+        </div>
         <div id="middle-side">
             <div id="player2-side">
+                <div id="player2-thinking"><h4>Thinking ...</h4></div>
                 <h3>Player 2</h3>
                 <div id="player2-hand"></div>
             </div>
             <div id="grid">
+                <div id="score-grid"></div>
                 <div id="grid-row-0"></div>
                 <div id="grid-row-1"></div>
                 <div id="grid-row-2"></div>
@@ -32,15 +52,16 @@
             </div>
         </div>
         <div id="right-side">
+            <div id="time-div">Time Elapsed: <span id="time">00:00</span></div>
+            <div id="now-playing"></div>
             <div id="score">
                 <h3>SCORE</h3>
-                <h1>4 | 3</h1>
+                <h1><span id="p1-score">0</span> | <span id="p2-score">0</span></h1>
             </div>
             <div id="messages">
                 
             </div>
         </div>
-        <p id="credits">Designed and created by <a href="https://www.deepseacoding.com">deepSeaCoding.com</a> &copy;<span id="year"></span></p>
     </div>
     
     <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
@@ -48,6 +69,7 @@
     <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="js/helpers.js"></script>
     <script type="text/javascript" src="js/definitions.js"></script>
+    <script type="text/javascript" src="js/ui_commands.js"></script>
     <script type="text/javascript" src="js/mechanics.js"></script>
     <script type="text/javascript" src="js/graphics.js"></script>
     <script type="text/javascript" src="js/main.js"></script>

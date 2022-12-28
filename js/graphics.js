@@ -1,16 +1,65 @@
 // Draws an svg tile image inside a flippable parent card element
-function DrawTile(tile,parent)
+function DrawTile(tile,parent,index="NULL")
 {
     //Create the card element
     const card = document.createElement('div');
     card.id = tile.id;
     card.dataset.label = tile.label;
+    card.dataset.placing = parent.id;
+    // Pass the index of the tile in the respective tile array
+    if (index != "NULL") card.dataset.index = index;
+    // Add draggable behaviour to p1 tiles
+    if (parent.id == "player1-hand") card.draggable = true;
+    // Add drop devaviour to the grid tiles
+    if (parent.id == "grid-row-0" || parent.id == "grid-row-1" || parent.id == "grid-row-2" || parent.id == "grid-row-3" || parent.id == "grid-row-4") {
+        card.addEventListener('dragover', (e)=> { 
+            e.preventDefault();
+        });
+        card.addEventListener('drop', (e)=> { 
+            if (activePlayer == 1 && gameStarted === true) {
+                // get the target card el 
+                const t =  e.target.closest('.card');
+                if (t.dataset.label != 'BBBB') DisplayMessage('You cannot place on an occupied tile');
+                else {
+                    //proceed with the tile placemant
+                    const match = CheckPlacement(t.dataset.index);
+                    if (match.length > 0) {
+                        gridTiles[t.dataset.index] = new Tile(selectedT.dataset.label);
+                        p1Hand.splice(selectedT.dataset.index,1);
+                        DrawGrid();
+                        DrawPlayerHand(1);
+                        rotateBtn.disabled = true;
+                        cards = Array.from(document.getElementsByClassName('card'));
+                        UpdateScore(t.dataset.index,match,activePlayer);
+                        SwapActivePlayer();
+                        selectedT = 0;
+                    }
+                }
+            } else if (activePlayer == 1 && gameStarted === false) {
+                DisplayMessage("Please wait");
+            } else {
+                DisplayMessage("Please wait" + '<br>' + 'It\'s the turn of Player 2');
+            }
+        });
+    }
+
+    // show the back side of the flipped tiles. 
     if (tile.facing == 1) card.classList.add('flipped');
-    //add event listener
-    card.addEventListener('click', ()=> {
-        cards.forEach(card => card.classList.remove('selected'));
-        card.classList.add('selected');
-        console.log("selected tile " + card.dataset.label + " with id " + card.id);
+    //add event listener for selection
+    card.addEventListener('mousedown', (e)=> {
+        if (activePlayer == 1 && gameStarted === true) {
+            cards.forEach(card => card.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedT = card;
+            if (card.dataset.placing == 'player1-hand') rotateBtn.disabled = false;
+            else rotateBtn.disabled = true;
+            console.log("selected tile " + card.dataset.label + " with id " + card.id);
+            if (e.shiftKey) console.log("shift");
+        } else if (activePlayer == 1 && gameStarted === false) {
+            DisplayMessage("Please wait");
+        } else {
+            DisplayMessage("Please wait" + '<br>' + 'It\'s the turn of Player 2');
+        }
     });
     card.classList.add('card');
     parent.appendChild(card);
@@ -32,8 +81,8 @@ function DrawTile(tile,parent)
     svg.setAttributeNS(null, "width", TILE_SIZE);
     svg.setAttributeNS(null, "height", TILE_SIZE);
     svg.style.display = "block";
-     // append the svg to the front
-     front.append(svg);
+    // append the svg to the front
+    front.append(svg);
 
     // Draw the top triangle
     const gtop = document.createElementNS(xmlns,'g');
@@ -76,32 +125,36 @@ function DrawTile(tile,parent)
     gleft.appendChild(polygonl);
     svg.appendChild(gleft);
    
-    // Add the back
-    const back = document.createElement('div');
-    back.classList.add('card__back');
-    inner.appendChild(back);
-    //  create the back side tile
-    const grect = document.createElementNS(xmlns,'g');
-    const rect = document.createElementNS(xmlns,'polygon');
-    rect.setAttributeNS(null, 'display','inline');
-    // rect.setAttributeNS(null, 'stroke',tile.lines);
-    // rect.setAttributeNS(null, 'stroke-width',1);
-    rect.setAttributeNS(null, 'fill', C_GREY);
-    rect.setAttributeNS(null, 'points','0,0, 0,100, 100,0, 100,100');
-    grect.appendChild(rect);
-    back.appendChild(grect);
+    //Add the back to player 2 cards. 
+    // Adding the back side to player 1 makes the drag effect show the back
+    if (parent.id == "player2-hand") {
+        const back = document.createElement('div');
+        back.classList.add('card__back');
+        inner.appendChild(back);
+        //  create the back side tile
+        const grect = document.createElementNS(xmlns,'g');
+        const rect = document.createElementNS(xmlns,'polygon');
+        rect.setAttributeNS(null, 'display','inline');
+        // rect.setAttributeNS(null, 'stroke',tile.lines);
+        // rect.setAttributeNS(null, 'stroke-width',1);
+        rect.setAttributeNS(null, 'fill', C_GREY);
+        rect.setAttributeNS(null, 'points','0,0, 0,100, 100,0, 100,100');
+        grect.appendChild(rect);
+        back.appendChild(grect);
+    }
 
-    if (tile.side == 1) inner.style.transform = "rotate(180deg)";
+    if (tile.facing == 1) card.style.transform = "rotateY(180deg)";
 }
 
 // Draws the gridTiles array inside the grid row elements
 function DrawGrid()
 {
+    ClearGrid();
     for (let x=0; x<GRID_SIZE; x++)
     {
         for (let y=0; y<GRID_SIZE; y++)
         {
-            DrawTile(gridTiles[x +y*GRID_SIZE], document.getElementById("grid-row-" + y));
+            DrawTile(gridTiles[x +y*GRID_SIZE], document.getElementById("grid-row-" + y),x +y*GRID_SIZE);
         }
     }
 }
@@ -111,14 +164,27 @@ function DrawPlayerHand(player=0)
 {
     if (player == 1 || player == 0)
     {
-        p1Hand.forEach(tile => {
-            DrawTile(tile, p1handDiv);
-        })
+        p1handDiv.innerHTML = "";
+        for (let i=0; i<p1Hand.length; i++) {
+            DrawTile(p1Hand[i], p1handDiv, i);
+        }
     }
     if (player == 2 || player == 0)
     {
-        p2Hand.forEach(tile => {
-            DrawTile(tile, p2handDiv);
-        })
+        p2handDiv.innerHTML = "";
+        for (let i=0; i<p2Hand.length; i++) {
+            // Show P2 hand
+            p2Hand[i].facing = 1;
+            DrawTile(p2Hand[i], p2handDiv, i);
+        }
+    }
+}
+
+// Clears the Grid
+function ClearGrid()
+{
+    for (let i=0; i<GRID_SIZE; i++)
+    {
+        document.getElementById("grid-row-" + i).innerHTML = "";
     }
 }
