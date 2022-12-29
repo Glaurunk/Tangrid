@@ -13,31 +13,87 @@
 </head>
 <body>
     <div id="content">
+        <!-- SETTINGS -->
+        <button id="settings-btn" class="icon-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+        <div id="settings" class="hidden">
+            <h4 class="text-center mb-3">SETTINGS</h4>
+            <div class="inner">
+                <h5>PLAYER ORDER</h5>
+                <label class="container">Play First
+                    <input type="radio" checked="checked" name="player-order" id="player-1" data-player="1">
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="container">Play Second
+                    <input type="radio" name="player-order" id="player-2" data-player="2">
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="container">Random Order
+                    <input type="radio" name="player-order" id="player-r" data-player="0">
+                    <span class="checkmark"></span>
+                  </label>
+    
+                <h5>DIFFICULTY LEVEL</h5>
+                <label class="container">Easy
+                    <input type="radio" checked="checked" name="difficulty" id="difficulty-1" data-difficulty="1">
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="container">Moderate
+                    <input type="radio" name="difficulty" id="difficulty-2" data-difficulty="2">
+                    <span class="checkmark"></span>
+                  </label>
+                  <label class="container">Difficult
+                    <input type="radio" name="difficulty" id="difficulty-3" data-difficulty="3">
+                    <span class="checkmark"></span>
+                  </label>
+            </div>
+        </div>
+        <!-- END SETTINGS-->
+
+        <!-- HOW TO PLAY -->
+        <button id="rules-btn" class="icon-btn" title="How to play"><i class="fa-solid fa-book"></i></button>
+        <div id="rules" class="hidden">
+            <h4 class="text-center mb-3">HOW TO PLAY</h4>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facere odit facilis veritatis molestias vero fuga illo beatae animi delectus consectetur, saepe blanditiis voluptas unde? Corporis ducimus incidunt tempora dolore soluta.</p>
+        </div>
+        
+        <!-- END HOW TO PLAY-->
+
+        <!-- HOME SCREEN -->
         <div id="home-screen">
             <div class="img-cont">
                 <img class="img-fluid" src="images/tangrid_logo.png" alt="logo">
-                <h4>A game of colors and triangles</h4>
+                <h5>A game of colors and triangles</h5>
             </div>
             <div id="home-message">
-                <h1>Press Start!</h1>
+                <h3>Press Start!</h3>
                 <button class="btn"id="start-btn" type="button">Start</button>
             </div>
-            <p id="credits">Designed and created by <a href="https://www.deepseacoding.com">deepSeaCoding.com</a> &copy;<span id="year"></span></p>
+            <h6 id="credits">Designed and created by <a href="https://www.deepseacoding.com">deepSeaCoding.com</a> &copy;<span id="year"></span></h6>
         </div>
+        <!-- END HOME SCREEN -->
         
+        <!-- GAME BOARD -->
+        <!-- LEFT SIDE -->
         <div id="left-side">
             <div id="panel">
-                <button class="btn"id="rotate-btn" type="button" disabled>Rotate</button>
-                <button class="btn"id="undo-btn" type="button" disabled>Undo</button>
-                <button class="btn"id="discard-btn" type="button" disabled>Discard & Pass</button>
+                <button class="btn command-btn"id="rotate-btn" type="button" disabled title="
+                Rotate 90 degrees clockwise the selected title">Rotate</button>
+                <button class="btn command-btn"id="undo-btn" type="button" disabled title="Undo the last move">Undo</button>
+                <button class="btn command-btn"id="discard-btn" type="button" disabled title="Discard 2 tiles, Draw 2 tiles and Pass the turn">Discard & Pass</button>
+                <button class="btn command-btn"id="end-btn" type="button" disabled title="Abandon a game. You loose even if you are currently leading the score">Surrender</button>
+                <button class="btn command-btn"id="restart-btn" type="button" disabled tile="Start a new game with the current settings">Start a new Game</button>
+                <button class="btn command-btn"id="exit-btn" type="button" disabled tile="End a game and exit to the main screen">Exit</button>
             </div>
         </div>
+        <!-- MIDDLE SIDE-->
         <div id="middle-side">
+            <!--P2 SIDE-->
             <div id="player2-side">
                 <div id="player2-thinking"><h4>Thinking ...</h4></div>
-                <h3>Player 2</h3>
+                <h3>CPU</h3>
                 <div id="player2-hand"></div>
             </div>
+            <!-- GRID -->
             <div id="grid">
                 <div id="score-grid"></div>
                 <div id="grid-row-0"></div>
@@ -46,11 +102,13 @@
                 <div id="grid-row-3"></div>
                 <div id="grid-row-4"></div>
             </div>
+            <!-- P1 SIDE-->
             <div id="player1-side">
-                <h3>Player 1</h3>
+                <h3 id="p1-name">Player 1</h3>
                 <div id="player1-hand"></div>
             </div>
         </div>
+        <!-- RIGHT SIDE -->
         <div id="right-side">
             <div id="time-div">Time Elapsed: <span id="time">00:00</span></div>
             <div id="now-playing"></div>
@@ -58,9 +116,8 @@
                 <h3>SCORE</h3>
                 <h1><span id="p1-score">0</span> | <span id="p2-score">0</span></h1>
             </div>
-            <div id="messages">
-                
-            </div>
+            <!-- MESSAGES -->
+            <div id="messages"></div>
         </div>
     </div>
     
@@ -71,6 +128,7 @@
     <script type="text/javascript" src="js/definitions.js"></script>
     <script type="text/javascript" src="js/ui_commands.js"></script>
     <script type="text/javascript" src="js/mechanics.js"></script>
+    <script type="text/javascript" src="js/logic.js"></script>
     <script type="text/javascript" src="js/graphics.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 </body>

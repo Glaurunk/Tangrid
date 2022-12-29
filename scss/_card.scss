@@ -9,6 +9,11 @@
         border: 3px solid var(--c-selected);
       }
     }
+    &.selected2 {
+      .card__inner {
+        border: 3px solid var(--c-selected2);
+      }
+    }
     &.flipped {
       .card__inner {
         transform: rotateY(180deg);

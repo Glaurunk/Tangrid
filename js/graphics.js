@@ -6,6 +6,7 @@ function DrawTile(tile,parent,index="NULL")
     card.id = tile.id;
     card.dataset.label = tile.label;
     card.dataset.placing = parent.id;
+    card.dataset.value = tile.value;
     // Pass the index of the tile in the respective tile array
     if (index != "NULL") card.dataset.index = index;
     // Add draggable behaviour to p1 tiles
@@ -21,18 +22,27 @@ function DrawTile(tile,parent,index="NULL")
                 const t =  e.target.closest('.card');
                 if (t.dataset.label != 'BBBB') DisplayMessage('You cannot place on an occupied tile');
                 else {
-                    //proceed with the tile placemant
+                    //validate the placement position
                     const match = CheckPlacement(t.dataset.index);
                     if (match.length > 0) {
+                        //replace the grid target in the gridTiles[] with the selected tile
                         gridTiles[t.dataset.index] = new Tile(selectedT.dataset.label);
+                        // remove it from the hand
                         p1Hand.splice(selectedT.dataset.index,1);
+                        //redraw the grid and the P1 hand
                         DrawGrid();
                         DrawPlayerHand(1);
+                        // disable rotate btn
                         rotateBtn.disabled = true;
+                        // recalculate the tiles in play
                         cards = Array.from(document.getElementsByClassName('card'));
-                        UpdateScore(t.dataset.index,match,activePlayer);
-                        SwapActivePlayer();
-                        selectedT = 0;
+                        // update the score
+                        UpdateScore(t.dataset.index,match,activePlayer,selectedT.dataset.value);
+                        // pass the turn 
+                        // setTimeout(()=>{ 
+                        //     SwapActivePlayer() ;
+                        //     selectedT = 0;
+                        // },3000);
                     }
                 }
             } else if (activePlayer == 1 && gameStarted === false) {

@@ -28,9 +28,8 @@ function DisplayYear()
 ///////////////////////////////////////////////////////
 
 //DetectDisplay();
+Clear();
 DisplayYear();
-// Initialize the UI
-InitUI();
 // shuffle deck and draw cards
 PopulatePlayersHand();
 DrawGrid();
@@ -39,5 +38,9 @@ DrawPlayerHand(0);
 window.addEventListener('keypress', function(e) { 
     KeyInputHandler(e.key)
 });
+
+// Initialize the UI
+InitUI();
+
 // populate arrays of elements drawn by JS after the Draw functions
 cards = Array.from(document.getElementsByClassName('card'));

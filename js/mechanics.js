@@ -17,13 +17,16 @@ function PopulatePlayersHand()
 // Selects a tile by a keycode (1-6)
 function SelectTile(code)
 {
-    const i = parseInt(code) - 1;
-    const tile = p1Hand[i];
-    const card = document.getElementById(tile.id.toString());
-    cards.forEach(card => card.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedT = card;
-    console.log("selected tile " + card.dataset.label + " with id " + card.id);
+    if (playerOrder === 1 && gameStarted === true)
+    {
+        const i = parseInt(code) - 1;
+        const tile = p1Hand[i];
+        const card = document.getElementById(tile.id.toString());
+        cards.forEach(card => card.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedT = card;
+        console.log("selected tile " + card.dataset.label + " with id " + card.id);
+    }
 }
 
 // Rotates the selected tile clockwise by 90 degrees
@@ -88,8 +91,9 @@ function DrawCard(player)
         p2Hand.push(p2Tiles[rand]);
         DrawPlayerHand(2);
     }
-    DisplayMessage("Player " + player + " draws one card");
-
+    cards = Array.from(document.getElementsByClassName('card'));
+    if (activePlayer === 1) DisplayMessage("Player 1 draws one card");
+    else DisplayMessage("The Computer draws one card");
 }
 
 // Checks if a placing position is valid by comparing neighboring labels
@@ -97,6 +101,7 @@ function CheckPlacement(index)
 {
     let position = true;                // the returned variable
     let black = false;                  // true if the matching sides are black
+    let colorMatch = false;             // true at least one matching side is with color
     let edge = false;                   // true if color faces the outside
     let compT,selT;                     // the characters to compare for matching.
     let match = [];                     // an array of matching pairs
@@ -124,7 +129,9 @@ function CheckPlacement(index)
         if (selT != compT) position = false;
         if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
         if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        if (position === true) match.push(new Pair('top',compT+selT));
+        const newP = new Pair('top',compT+selT);
+        if (newP.type != 'BB') colorMatch = true;
+        if (position === true) match.push(newP);
     }
 
     const bottom = val.find(tile => { return tile.pos == 'bottom'});
@@ -136,7 +143,9 @@ function CheckPlacement(index)
         if (selT != compT) position = false;
         if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
         if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        if (position === true) match.push(new Pair('bottom',compT+selT));
+        const newP = new Pair('bottom',compT+selT);
+        if (newP.type != 'BB') colorMatch = true;
+        if (position === true) match.push(newP);
     }
 
     const right = val.find(tile => { return tile.pos == 'right'});
@@ -148,7 +157,9 @@ function CheckPlacement(index)
         if (selT != compT) position = false;
         if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
         if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        if (position === true) match.push(new Pair('right',compT+selT));
+        const newP = new Pair('right',compT+selT);
+        if (newP.type != 'BB') colorMatch = true;
+        if (position === true) match.push(newP);
     }
 
     const left = val.find(tile => { return tile.pos == 'left'});
@@ -160,7 +171,9 @@ function CheckPlacement(index)
         if (selT != compT) position = false;
         if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
         if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        if (position === true) match.push(new Pair('left',compT+selT));
+        const newP = new Pair('left',compT+selT);
+        if (newP.type != 'BB') colorMatch = true;
+        if (position === true) match.push(newP);
     }
 
     // Check if the tile faces the edge
@@ -197,10 +210,11 @@ function CheckPlacement(index)
     };
 
     // If the player tries to match black tiles break with msg
-    if (black === true && match.length < 1) {
-        DisplayMessage('You cannot match black sides');
+    if (black === true && colorMatch === false) {
+        DisplayMessage('You must match with at least one color side');
         return false;
     }
+    console.log("colorMath =" + colorMatch);
 
     return match;
 }
@@ -224,60 +238,72 @@ function GetAdjacentTiles(index)
 }
 
 // Updates the score for a player
-function UpdateScore(index,match,player)
+function UpdateScore(index,match,player,value)
 {
     let i=0;
     let p1s = 0;
     let p2s = 0;
     let message = ""; 
+    let ss = parseInt(value) > 1 ? 's' : '';
+
+    if (player == 1) { 
+        p1s += parseInt(value);
+        message += 'Player 1 places a ' + value + '-color' + ss + ' tile worth ' + value + ' point' + ss + '. '; 
+    }
+    if (player == 2) { 
+        p2s += parseInt(value);
+        message += 'The Computer places a ' + value + '-color' + ss + ' tile worth ' + value + ' point' + ss + '. '; 
+
+    }
+
     for (i; i<match.length; i++) {
         switch(match[i].type) {
             case '11':
                 if (player == 1) {
                     p1s += 2;
-                    message += "Color match: 2 points" + '<br>';
+                    message += "<br>Color match: bonus 2 points.";
                 }
                 if (player == 2) { 
                     p2s -= 2;
-                    message += "Rival color match: -2 points" + '<br>';
+                    message += "<br>Rival color match: penalty -2 points.";
                 }
                 break;
             case '22':
                 if (player == 1) {
                     p1s -= 2;
-                    message += "Rival color match: -2 points" + '<br>';
+                    message += "<br>Rival color match: penalty -2 points.";
                 }
                 if (player == 2) { 
                     p2s += 2;
-                    message += "Color match: 2 points" + '<br>';
+                    message += "<br>Color match: bonus 2 points.";
                 }
                 break;
             case '1J':
             case 'J1':
                 if (player == 1) {
                     p1s += 1;
-                    message += "Color match with Joker: 1 point" + '<br>';
+                    message += "<br>Color match with Joker: bonus 1 point.";
                 }
                 if (player == 2) { 
                     p2s -= 1;
-                    message += "Opposite color match with Joker: -1 point" + '<br>';
+                    message += "<br>Opposite color match with Joker: penalty -1 point.";
                 }
                 break;
             case '2J':
             case 'J2':
                 if (player == 1) {
                     p1s -= 1;
-                    message += "Opposite color match with Joker: -1 point" + '<br>';
+                    message += "<br>Opposite color match with Joker: penalty -1 point.";
                 }
                 if (player == 2) { 
                     p2s += 1;
-                    message += "Color match with Joker: 1 point" + '<br>';
+                    message += "<br>Color match with Joker: bonus 1 point.";
                 }
                 break;
             case 'JJ':
                 if (player == 1) p1s += 3;
                 if (player == 2) p2s += 3;
-                message += "Joker match: 3 points" + '<br>';
+                message += "<br>Joker match: bonus 3 points";
                 message;
                 break;
             case 'BB':
@@ -289,18 +315,18 @@ function UpdateScore(index,match,player)
         if (i == 1)  {
             if (player == 1) p1s *= 2;
             if (player == 2) p2s *= 2;
-            message += 'Double Match! Score 2X!' + '<br>';;
+            message += '<br>Double Match! Score 2X!';
         }
         if (i == 2)  {
             if (player == 1) p1s *= 3;
             if (player == 2) p2s *= 3;
-            message += 'Triple Match! Score 3X!' + '<br>';;
+            message += '<br>Triple Match! Score 3X!';
 
         }
         if (i == 3)  {
             if (player == 1) p1s *= 5;
             if (player == 2) p2s *= 5;
-            message += 'Full Match! Score 5X!' + '<br>';;
+            message += '<br>Full Match! Score 5X!';
         }
 
     }
@@ -308,11 +334,31 @@ function UpdateScore(index,match,player)
     p2Score += p2s;
     p1ScoreDiv.innerHTML = p1Score;
     p2ScoreDiv.innerHTML = p2Score;
-    if (player == 1) message += 'Score: ' + p1s; 
-    if (player == 2) message += 'Score: ' + p2s;
+    if (player == 1) message += '<br>Player 1 scores: ' + p1s + ' points.'; 
+    if (player == 2) message += '<br>The Computer scores: ' + p2s + 'points.';
+    console.log(message);
     DisplayMessage(message); 
 }
 
+// Displays a modal foe Player 2 Thinking
+function ShowP2Thinking()
+{
+    p2thinkDiv.classList.add('shown');
+    setTimeout(()=> {
+        p2thinkDiv.classList.remove('shown');
+        SwapActivePlayer();
+    }, P2_THINK_TIME);
+}
+
+// reveals player 2 hand
+function FlipP2Hand(facing)
+{
+    for (let i=0; i<p2Hand.length; i++)
+    {
+        p2Hand[i].facing = facing;
+    }
+    //DrawPlayerHand(2);  
+}
 //////////////////////////////////////////////////////////
 /// AI
 //////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@ class Tile
         this.facing = facing;                               // 1 face up, 0 face down
         this.lines = lines;                                 // the color of the inner lines
         this.border = border;                               // the color of the tile border
+        this.value = this.GetValue(label);                  // The tile value: +1 for every color
     }
 
     GetColor(color)                                         //Returns a hex color code 
@@ -30,6 +31,14 @@ class Tile
                 return C_GREY;
         }
     }
+    GetValue(label)                                         // Returns an integer between 1-4
+    {
+        let v = 0;
+        for (let i=0; i<label.length; i++) {
+            if (label.substr(i,1) != 'B') v += 1;
+        }
+        return v;
+    }                                         
 }
 
 // A helper class used to determine a tiles neighbors
@@ -72,6 +81,7 @@ let gameStarted = false;
 let activePlayer = 1;
 let p1Score = 0;
 let p2Score = 0;
+let playerOrder = 1;
 
 //TILES
 //The initial grid state
@@ -142,6 +152,8 @@ let cards;   // populated after the svgs have been drawn to the screen
 // DOM ELEMENTS
 // DIVS
 const homeScreen = document.getElementById("home-screen");
+const settingsDiv = document.getElementById("settings");
+const rulesDiv = document.getElementById("rules");
 const p1handDiv = document.getElementById("player1-hand");
 const p2handDiv = document.getElementById("player2-hand");
 const messagesDiv = document.getElementById("messages");
@@ -150,8 +162,17 @@ const p1ScoreDiv = document.getElementById("p1-score");
 const p2ScoreDiv = document.getElementById("p2-score"); 
 const p2thinkDiv = document.getElementById('player2-thinking');
 // BUTTONS
+const settingsBtn = document.getElementById("settings-btn");
+const rulesBtn = document.getElementById("rules-btn");
+const playerOrderRbtns = Array.from(document.querySelectorAll('input[name="player-order"]'));
+const difficultyRbtns = Array.from(document.querySelectorAll('input[name="difficulty"]'));
+// COMMANDS
 const startBtn = document.getElementById("start-btn");
+const endBtn = document.getElementById("end-btn");
+const restartBtn = document.getElementById("restart-btn");
 const undoBtn = document.getElementById("undo-btn");
 const rotateBtn = document.getElementById("rotate-btn");
+const exitBtn = document.getElementById("exit-btn");
+const discardBtn = document.getElementById("discard-btn");
 
 

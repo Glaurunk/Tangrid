@@ -1,14 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
 :root {
   --c-one: #7E67A4;
   --c-two: #5B88C4;
   --c-joker: #DE9133;
-  --c-flip: #333333;
   --c-white: #ffffff;
+  --c-light-grey: #cccccc;
+  --c-grey: #333333;
   --c-black: #000000;
   --c-selected: #ffda09;
+  --c-selected2: #ff4322;
 }
 
 body {
+  overflow: hidden;
+}
+body h1 {
+  font-size: 98px;
+}
+body h2 {
+  font-size: 76px;
+}
+body h3 {
+  font-size: 60px;
+}
+body h4 {
+  font-size: 48px;
+}
+body h5 {
+  font-size: 32px;
+}
+body h6 {
+  font-size: 24px;
+}
+body p {
+  font-size: 18px;
+}
+
+body {
+  font-family: "VT323", monospace;
   background-color: var(--c-black);
   color: var(--c-white);
 }
@@ -38,6 +67,9 @@ body #content #middle-side #player2-side {
   text-align: center;
   margin: 1rem 0 2rem;
 }
+body #content #middle-side #player2-side h3 {
+  color: var(--c-two);
+}
 body #content #middle-side #player2-side #player2-thinking {
   width: 75%;
   padding: 1rem;
@@ -46,7 +78,7 @@ body #content #middle-side #player2-side #player2-thinking {
   opacity: 0.98;
   position: absolute;
   text-align: center;
-  top: -100px;
+  top: -150px;
   transition: 0.5s;
   left: 50%;
   z-index: 2;
@@ -84,6 +116,9 @@ body #content #middle-side #grid #score-grid {
 body #content #middle-side #player1-side {
   text-align: center;
 }
+body #content #middle-side #player1-side h3 {
+  color: var(--c-one);
+}
 body #content #middle-side #player1-side #player1-hand {
   display: flex;
   width: 820px;
@@ -106,8 +141,14 @@ body #content #right-side #now-playing {
   font-size: 1.2rem;
 }
 body #content #right-side #score {
-  margin: 150px auto;
+  margin: 50px auto 25px;
   text-align: center;
+}
+body #content #right-side #score #p1-score {
+  color: var(--c-one);
+}
+body #content #right-side #score #p2-score {
+  color: var(--c-two);
 }
 body #content #right-side #messages {
   padding: 1rem 3rem;
@@ -118,9 +159,7 @@ body #content #right-side #messages .message {
   padding: 1.5rem;
   border: 1px solid var(--c-white);
   border-radius: 8px;
-  opacity: 0;
-  animation-name: messageFade;
-  animation-duration: 5s;
+  opacity: 1;
 }
 body .small-window-msg {
   margin: 2rem auto;
@@ -142,6 +181,146 @@ body .small-window-msg {
     opacity: 0;
   }
 }
+#settings-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9;
+  font-size: 36px;
+}
+
+#settings {
+  z-index: 8;
+  position: absolute;
+  top: 100px;
+  left: 1rem;
+  transition: 1s;
+  width: 300px;
+  height: 475px;
+  padding: 1rem;
+  border: 1px solid var(--c-white);
+  background-color: var(--c-grey);
+  color: var(--c-white);
+  border-radius: 0.5rem;
+}
+#settings.hidden {
+  left: -320px;
+  transition: 1s;
+}
+#settings .inner {
+  margin-left: 26px;
+}
+
+#rules-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9;
+  font-size: 36px;
+}
+
+#rules {
+  z-index: 8;
+  position: absolute;
+  top: 100px;
+  right: 1rem;
+  transition: 1s;
+  width: 300px;
+  height: 475px;
+  padding: 1rem;
+  border: 1px solid var(--c-white);
+  background-color: var(--c-grey);
+  color: var(--c-white);
+  border-radius: 0.5rem;
+}
+#rules.hidden {
+  right: -320px;
+  transition: 1s;
+}
+
+button.icon-btn {
+  background: none;
+  border: 0;
+  color: var(--c-white);
+  font-size: 24px;
+  transition: 0.3s;
+}
+button.icon-btn:hover {
+  cursor: pointer;
+  color: var(--c-light-grey);
+  transition: 0.3s;
+}
+button.icon-btn:focus {
+  outline: 0;
+  border: 0;
+}
+
+/* Customize the label (the container) */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: var(--c-white);
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a background color */
+.container:hover input ~ .checkmark {
+  background-color: var(--c-light-grey);
+}
+
+/* When the radio button is checked, add a background */
+.container input:checked ~ .checkmark {
+  background-color: var(--c-one);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-white);
+}
+
 .card {
   position: relative;
   perspective: 1000px;
@@ -151,6 +330,9 @@ body .small-window-msg {
 }
 .card.selected .card__inner {
   border: 3px solid var(--c-selected);
+}
+.card.selected2 .card__inner {
+  border: 3px solid var(--c-selected2);
 }
 .card.flipped .card__inner {
   transform: rotateY(180deg);
@@ -188,15 +370,16 @@ body .small-window-msg {
 }
 
 #home-screen {
+  font-size: 1.3rem;
   display: block;
   position: absolute;
   width: 90%;
-  height: 90vh;
+  height: 95vh;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 0.5rem;
-  z-index: 9;
+  z-index: 7;
   background-color: rgba(40, 40, 63, 0.98);
 }
 #home-screen.hidden {
@@ -229,6 +412,7 @@ body .small-window-msg {
   padding: 0.5rem 0;
   font-size: 1.2rem;
   margin-top: 1rem;
+  font-size: 24px;
 }
 #home-screen #credits {
   text-align: center;

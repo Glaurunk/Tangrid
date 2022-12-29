@@ -18,7 +18,7 @@ function DisplayMessage(text,delay=0)
     msg.classList.add('message');
     msg.innerHTML = text;
     messagesDiv.appendChild(msg);
-    setTimeout(()=> {  messagesDiv.innerHTML = "";}, 5500);
+    //setTimeout(()=> {  messagesDiv.innerHTML = "";}, 5500);
   }, delay);
 }
 
@@ -57,8 +57,28 @@ function SwapActivePlayer()
 {
   if (activePlayer == 1) activePlayer = 2;
   else activePlayer = 1;
-  if (activePlayer == 2) Player2Turn();
-  if (activePlayer == 1) DrawCard(1);
+  if (activePlayer == 2) {
+    undoBtn.disabled = true;
+    discardBtn.disabled = true;
+    Player2Turn();
+  }
+  if (activePlayer == 1) {
+    undoBtn.disabled = false;
+    discardBtn.disabled = false;
+    DrawCard(1);
+  }
   ShowActivePlayer();
+}
+
+// Clears State and Data
+function Clear()
+{
+  gameStarted = false;
+  rotateBtn.disabled = true;
+  undoBtn.disabled = true;
+  discardBtn.disabled = true;
+  endBtn.disabled = true;
+  restartBtn.disabled = true;
+  exitBtn.disabled = true;
 }
 

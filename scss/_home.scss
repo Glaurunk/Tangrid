@@ -1,13 +1,14 @@
 #home-screen {
+    font-size: 1.3rem;
     display: block;
     position: absolute;
     width: 90%;
-    height: 90vh;
+    height: 95vh;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
     border-radius: .5rem;
-    z-index: 9; 
+    z-index: 7; 
     background-color: rgba(40, 40, 63, 0.98);
     &.hidden {
         top: -60%;
@@ -38,6 +39,7 @@
             padding: .5rem 0;
             font-size: 1.2rem;
             margin-top: 1rem;
+            font-size: 24px;
         }
     }
     #credits {

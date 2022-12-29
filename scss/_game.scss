@@ -1,0 +1,145 @@
+body {
+    font-family: $main-font;
+    background-color: var(--c-black);
+    color: var(--c-white);
+    #content {
+        position: relative;
+        display: flex;
+        width: 100%;
+        #left-side {
+            width: 100%;
+            #panel {
+                margin-top: 30%;
+                text-align: center;
+                button {
+                    width: 50%;
+                    padding: .5rem 0;
+                    font-size: 1.2rem;
+                    margin-bottom: .5rem;
+                    &:disabled {
+                        color: var(--c-white);
+                    }
+                }
+            }
+        }
+        #middle-side {
+            #player2-side {
+                position: relative;
+                text-align: center;
+                margin: 1rem 0 2rem;
+                h3 {
+                    color: var(--c-two);
+                }
+                #player2-thinking {
+                    width: 75%;
+                    padding: 1rem;
+                    border: 1px solid var(--c-white);
+                    background-color: var(--c-two);
+                    opacity: 0.98;
+                    position: absolute;
+                    text-align: center;
+                    top: -150px;
+                    transition: .5s;
+                    left: 50%;
+                    z-index: 2;
+                    border-radius: 5px;
+                    transform: translateX(-50%);
+                    &.shown {
+                        top: 65px;
+                        transition: .5s;
+                    }
+                }
+                #player2-hand {
+                    width: 820px;
+                    display: flex;
+                    justify-content: center;
+                    margin: 1rem auto 0;
+                    .card {                    
+                        margin: 0 .5rem;
+                    }
+                }
+            }
+            #grid {
+                position: relative;
+                display: flex;
+                margin: 0 auto;
+                height: 520px;
+                width: 820px;
+                justify-content: center;
+                #score-grid {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 820px;
+                    height:520px;
+                }
+            }
+            #player1-side {
+                h3 {
+                    color: var(--c-one);
+                }
+                text-align: center;
+                #player1-hand {
+                    display: flex;
+                    width: 820px;
+                    margin: 1rem auto 0;
+                    justify-content: center;
+                    .card {
+                        margin: 0 .5rem;
+                    }
+                }
+            }
+        }
+        #right-side {
+            width: 100%;
+            #time-div {
+                text-align: center;
+                margin: 60px 0 20px;
+                font-size: 1.2rem;
+            }
+            #now-playing {
+                text-align: center;
+                font-size: 1.2rem;
+            }
+            #score  {
+                margin: 50px auto 25px;
+                text-align: center;
+                #p1-score {
+                    color: var(--c-one);
+                }
+                #p2-score {
+                    color: var(--c-two);
+                }
+            }
+            #messages {
+                padding: 1rem 3rem;
+                .message {
+                    font-size: 1.5rem;
+                    text-align: center;
+                    padding: 1.5rem;
+                    border: 1px solid var(--c-white);
+                    border-radius: 8px;
+                    opacity: 1;
+                    // animation-name: messageFade;
+                    // animation-duration: 5s;
+                }
+            }
+        }
+    }
+
+    .small-window-msg {
+        margin: 2rem auto;
+        width: 80%;
+        border: 2px solid var(--c-flip);
+        color: var(--c-white);
+        padding: 2rem 1rem;
+        border-radius: 5px;
+    }
+}
+
+@keyframes messageFade {
+    0%   { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
