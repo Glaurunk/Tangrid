@@ -9,7 +9,7 @@
     transform: translate(-50%,-50%);
     border-radius: .5rem;
     z-index: 7; 
-    background-color: rgba(40, 40, 63, 0.98);
+    background-color: var(--c-dark);
     &.hidden {
         top: -60%;
         transition: 1s;

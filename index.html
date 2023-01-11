@@ -78,7 +78,7 @@
             <div id="panel">
                 <button class="btn command-btn"id="rotate-btn" type="button" disabled title="
                 Rotate 90 degrees clockwise the selected title">Rotate</button>
-                <button class="btn command-btn"id="undo-btn" type="button" disabled title="Undo the last move">Undo</button>
+                <button class="btn command-btn"id="undo-btn" type="button" disabled title="Undo the last move">Undo last Move</button>
                 <button class="btn command-btn"id="discard-btn" type="button" disabled title="Discard 2 tiles, Draw 2 tiles and Pass the turn">Discard & Pass</button>
                 <button class="btn command-btn"id="end-btn" type="button" disabled title="Abandon a game. You loose even if you are currently leading the score">Surrender</button>
                 <button class="btn command-btn"id="restart-btn" type="button" disabled tile="Start a new game with the current settings">Start a new Game</button>
@@ -117,7 +117,24 @@
                 <h1><span id="p1-score">0</span> | <span id="p2-score">0</span></h1>
             </div>
             <!-- MESSAGES -->
+            <h4 class="text-center">MESSAGES</h4>
             <div id="messages"></div>
+        </div>
+        <div id="modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-body">
+                  <h1 id="modal-label"></h1>
+                  <p id="modal-text"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-btn" type="button" class="btn btn-default">OK</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+          
+            </div>
         </div>
     </div>
     

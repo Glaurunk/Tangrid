@@ -8,7 +8,11 @@
   --c-grey: #333333;
   --c-black: #000000;
   --c-selected: #ffda09;
-  --c-selected2: #ff4322;
+  --c-selected1: #ff0000;
+  --c-selected2: #00ff00;
+  --c-selected3: #0000ff;
+  --c-selected4: #00ffff;
+  --c-dark: #2a2a50;
 }
 
 body {
@@ -151,15 +155,14 @@ body #content #right-side #score #p2-score {
   color: var(--c-two);
 }
 body #content #right-side #messages {
-  padding: 1rem 3rem;
+  width: 90%;
+  margin: auto;
+}
+body #content #right-side #messages h4 {
+  text-align: center;
 }
 body #content #right-side #messages .message {
   font-size: 1.5rem;
-  text-align: center;
-  padding: 1.5rem;
-  border: 1px solid var(--c-white);
-  border-radius: 8px;
-  opacity: 1;
 }
 body .small-window-msg {
   margin: 2rem auto;
@@ -170,17 +173,13 @@ body .small-window-msg {
   border-radius: 5px;
 }
 
-@keyframes messageFade {
-  0% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+#modal .modal-content {
+  background-color: var(--c-dark);
 }
+#modal .modal-content h1 {
+  text-align: center;
+}
+
 #settings-btn {
   position: absolute;
   top: 1rem;
@@ -331,8 +330,17 @@ button.icon-btn:focus {
 .card.selected .card__inner {
   border: 3px solid var(--c-selected);
 }
+.card.selected1 .card__inner {
+  border: 3px solid var(--c-selected1);
+}
 .card.selected2 .card__inner {
   border: 3px solid var(--c-selected2);
+}
+.card.selected3 .card__inner {
+  border: 5px solid var(--c-selected3);
+}
+.card.selected4 .card__inner {
+  border: 3px solid var(--c-selected4);
 }
 .card.flipped .card__inner {
   transform: rotateY(180deg);
@@ -380,7 +388,7 @@ button.icon-btn:focus {
   transform: translate(-50%, -50%);
   border-radius: 0.5rem;
   z-index: 7;
-  background-color: rgba(40, 40, 63, 0.98);
+  background-color: var(--c-dark);
 }
 #home-screen.hidden {
   top: -60%;

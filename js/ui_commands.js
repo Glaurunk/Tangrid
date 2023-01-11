@@ -34,8 +34,6 @@ function InitUI()
             // Start by player order
             if (playerOrder === 1) {
                 setTimeout(()=> { 
-                    undoBtn.disabled = false;
-                    discardBtn.disabled = false;
                     DrawCard(1) ;
                 },3000);
             } else {
@@ -46,9 +44,13 @@ function InitUI()
             setTimeout(()=> { 
                 CountTime();
                 gameStarted = true;
-                endBtn.disabled = false;
-                restartBtn.disabled = false;
-                exitBtn.disabled = false;
+                if (playerOrder === 1) {             
+                    undoBtn.disabled = false;
+                    discardBtn.disabled = false;
+                    endBtn.disabled = false;
+                    restartBtn.disabled = false;
+                    exitBtn.disabled = false;
+                }
             }, 3000);
         });
     });
@@ -71,10 +73,60 @@ function InitUI()
         });
     });
     
+    //DIFFICULTY LEVEL
+    difficultyRbtns.forEach(btn => {
+        btn.addEventListener('click', ()=> {
+            if (btn.checked) {
+                if (gameStarted === false) {
+                    difficulty = parseInt(btn.dataset.difficulty);
+                } 
+            }
+        });
+    });
     //UNDO BUTTON
     //DISCARD & PASS BUTTON
     //GIVE UP BUTTON
+    endBtn.addEventListener('click', ()=> { 
+        confirmBtn.addEventListener('click', ()=> {
+            Clear();
+            $('#modal').modal('hide');
+            setTimeout(()=> {
+                modalLabel.innerHTML = "The CPU wins the game";
+                modalText.innerHTML = '';
+                document.querySelector('.modal-footer').style.visibility = 'hidden';
+                $('#modal').modal('show');
+                restartBtn.disabled = false;
+                exitBtn.disabled = false;
+                clearInterval(timer);
+            },1000);
+        });
+        modalLabel.innerHTML = '';
+        modalText.innerHTML = "Are you sure you want to surrender? Regardless of the current score you will loose the match";
+        document.querySelector('.modal-footer').style.visibility = 'visible';
+        $('#modal').modal('show');
+    });
+
+
     //NEW GAME BUTTON
+    restartBtn.addEventListener('click', ()=> { 
+        confirmBtn.addEventListener('click', ()=> { 
+            SetCookie('reload','true');
+            location.reload();
+        });
+        document.querySelector('.modal-footer').style.visibility = 'visible';
+        modalLabel.innerHTML = '';
+        modalText.innerHTML = "Are you sure you want to start a new game? All progress will be lost";
+        $('#modal').modal('show');
+    });
+
+    // EXIT BUTTON
+    exitBtn.addEventListener('click', ()=> { 
+        confirmBtn.addEventListener('click', ()=> location.reload() );
+        document.querySelector('.modal-footer').style.visibility = 'visible';
+        modalLabel.innerHTML = '';
+        modalText.innerHTML = "Are you sure you want to exit to the main menu? All progress will be lost";
+        $('#modal').modal('show');
+    });
 }
 
 // Undo last move

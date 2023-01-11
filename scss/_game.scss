@@ -112,16 +112,13 @@ body {
                 }
             }
             #messages {
-                padding: 1rem 3rem;
+               h4 {
+                text-align: center;
+               }
+                width: 90%;
+                margin: auto;
                 .message {
                     font-size: 1.5rem;
-                    text-align: center;
-                    padding: 1.5rem;
-                    border: 1px solid var(--c-white);
-                    border-radius: 8px;
-                    opacity: 1;
-                    // animation-name: messageFade;
-                    // animation-duration: 5s;
                 }
             }
         }
@@ -137,9 +134,12 @@ body {
     }
 }
 
-@keyframes messageFade {
-    0%   { opacity: 1; }
-    75%  { opacity: 1; }
-    100% { opacity: 0; }
+#modal {
+    .modal-content {
+        h1 {
+            text-align: center;
+        }
+        background-color: var(--c-dark);
+    }
 }
 

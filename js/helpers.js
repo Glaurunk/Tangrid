@@ -32,7 +32,7 @@ function CountTime()
   let minutes = 0;
   let seconds = 0;
   // start clock
-  setInterval(()=>{
+  timer = setInterval(()=>{
     seconds ++;
     if (seconds > 9) preS = "";
     if (seconds >= 60) {
@@ -55,16 +55,23 @@ function ShowActivePlayer()
 // passes the turn
 function SwapActivePlayer()
 {
-  if (activePlayer == 1) activePlayer = 2;
+  if (activePlayer === 1) activePlayer = 2;
   else activePlayer = 1;
-  if (activePlayer == 2) {
+  if (activePlayer === 2) {
     undoBtn.disabled = true;
     discardBtn.disabled = true;
+    rotateBtn.disabled = true;
+    endBtn.disabled = true;
+    restartBtn.disabled = true;
+    exitBtn.disabled = true;
     Player2Turn();
   }
-  if (activePlayer == 1) {
+  if (activePlayer === 1) {
     undoBtn.disabled = false;
     discardBtn.disabled = false;
+    endBtn.disabled = false;
+    restartBtn.disabled = false;
+    exitBtn.disabled = false;
     DrawCard(1);
   }
   ShowActivePlayer();
@@ -82,3 +89,26 @@ function Clear()
   exitBtn.disabled = true;
 }
 
+// Sets a cookie for a given time in ms
+function SetCookie(cname, cvalue, ms=5000) {
+  const d = new Date();
+  d.setTime(d.getTime() + (ms));
+  let expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=None;Secure";
+}
+
+// gets a cookie by name
+function GetCookie(cname) { 
+  let name = cname + "=";
+  let ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}

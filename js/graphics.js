@@ -39,10 +39,10 @@ function DrawTile(tile,parent,index="NULL")
                         // update the score
                         UpdateScore(t.dataset.index,match,activePlayer,selectedT.dataset.value);
                         // pass the turn 
-                        // setTimeout(()=>{ 
-                        //     SwapActivePlayer() ;
-                        //     selectedT = 0;
-                        // },3000);
+                        setTimeout(()=>{ 
+                            SwapActivePlayer() ;
+                            selectedT = 0;
+                        },3000);
                     }
                 }
             } else if (activePlayer == 1 && gameStarted === false) {

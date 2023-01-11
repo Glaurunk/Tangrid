@@ -21,7 +21,25 @@ function DisplayYear()
     document.getElementById("year").innerHTML = date;
 }
 
-
+// Applies the current settings
+function CheckSettings()
+{
+    // player order
+    playerOrderRbtns.forEach(btn => {
+        if (btn.checked) {
+            let p = parseInt(btn.dataset.player);
+            if (p === 1) playerOrder = 1;
+            if (p === 2) playerOrder = 2;
+            if (p === 0) playerOrder = Math.round(Math.random(1,2))+1;
+        } 
+    });
+    console.log("Player " + playerOrder + " goes first");
+    // difficulty level
+    difficultyRbtns.forEach(btn => {
+        if (btn.checked) difficulty = parseInt(btn.dataset.difficulty);
+    });
+    console.log("Difficulty level: " + difficulty);
+}
 
 ///////////////////////////////////////////////////////
 ////// INITIALIZATION
@@ -41,6 +59,14 @@ window.addEventListener('keypress', function(e) {
 
 // Initialize the UI
 InitUI();
+// Check and apply current settings
+CheckSettings();
 
 // populate arrays of elements drawn by JS after the Draw functions
 cards = Array.from(document.getElementsByClassName('card'));
+
+// if a restart has been requested start the game immediately
+if (GetCookie('reload') === 'true') { 
+    console.log('OK');
+    startBtn.dispatchEvent(new Event('click'));
+}

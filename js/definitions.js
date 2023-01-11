@@ -62,6 +62,28 @@ class Pair
 
 }
 
+// A helper class containing tile sides and colors
+class Match 
+{
+    constructor(side,color)
+    {
+        this.side=side;            // top/right/bottom/left
+        this.color=color;          // matching colors (1,2,J)
+    }
+
+}
+
+//a structure that defines a possible move for the cpu
+class Move
+{
+    constructor(id,matches=[],value=0)
+    {
+        this.id=id;                  // The tile id for DOM reference
+        this.matches=matches;        // An array containing all possible color Matches
+        this.value=value;            // The value of the move
+    }
+}
+
 // COLORS
 const C_ONE = "#7E67A4";
 const C_TWO = "#5B88C4";
@@ -82,6 +104,8 @@ let activePlayer = 1;
 let p1Score = 0;
 let p2Score = 0;
 let playerOrder = 1;
+let difficulty = 1;
+let timer;              // assigned inside CountTime()
 
 //TILES
 //The initial grid state
@@ -90,7 +114,13 @@ for (let i=0; i<GRID_SIZE*GRID_SIZE; i++) {
     const t = new Tile("BBBB",0,0,C_BLACK);
     gridTiles.push(t);
 }
+gridTiles[10] = new Tile("B212");
+gridTiles[11] = new Tile("1J1B");
 gridTiles[12] = new Tile("1212");
+gridTiles[13] = new Tile("121B");
+gridTiles[14] = new Tile("12B2");
+gridTiles[17] = new Tile("22B2");
+
    
 
 // Player one pool of cards
@@ -141,13 +171,13 @@ const p2Tiles = [
 ];
 
 //Player 1 hand
-const p1Hand = [];
-const p2Hand = [];
+let p1Hand = [];
+let p2Hand = [];
 
 //The selected Tile
 let selectedT;
 // All the tiles drawn on the screen
-let cards;   // populated after the svgs have been drawn to the screen
+let cards = [];   // populated after the svgs have been drawn to the screen
 
 // DOM ELEMENTS
 // DIVS
@@ -161,12 +191,15 @@ const nowPlaying = document.getElementById("now-playing");
 const p1ScoreDiv = document.getElementById("p1-score"); 
 const p2ScoreDiv = document.getElementById("p2-score"); 
 const p2thinkDiv = document.getElementById('player2-thinking');
-// BUTTONS
+const modalText = document.getElementById('modal-text');
+const modalLabel = document.getElementById('modal-label');
+// UI BUTTONS
 const settingsBtn = document.getElementById("settings-btn");
 const rulesBtn = document.getElementById("rules-btn");
 const playerOrderRbtns = Array.from(document.querySelectorAll('input[name="player-order"]'));
 const difficultyRbtns = Array.from(document.querySelectorAll('input[name="difficulty"]'));
-// COMMANDS
+const confirmBtn = document.getElementById('confirm-btn');
+// COMMAND BUTTONS
 const startBtn = document.getElementById("start-btn");
 const endBtn = document.getElementById("end-btn");
 const restartBtn = document.getElementById("restart-btn");
