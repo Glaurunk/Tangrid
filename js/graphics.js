@@ -17,34 +17,36 @@ function DrawTile(tile,parent,index="NULL")
             e.preventDefault();
         });
         card.addEventListener('drop', (e)=> { 
-            if (activePlayer == 1 && gameStarted === true) {
+            if (activePlayer == 1 && gameStarted === true && selectedT) {
                 // get the target card el 
                 const t =  e.target.closest('.card');
-                if (t.dataset.label != 'BBBB') DisplayMessage('You cannot place on an occupied tile');
-                else {
-                    //validate the placement position
-                    const match = CheckPlacement(t.dataset.index);
-                    if (match.length > 0) {
-                        //replace the grid target in the gridTiles[] with the selected tile
-                        gridTiles[t.dataset.index] = new Tile(selectedT.dataset.label);
-                        // remove it from the hand
-                        p1Hand.splice(selectedT.dataset.index,1);
-                        //redraw the grid and the P1 hand
-                        DrawGrid();
-                        DrawPlayerHand(1);
-                        // disable rotate btn
-                        rotateBtn.disabled = true;
-                        // recalculate the tiles in play
-                        cards = Array.from(document.getElementsByClassName('card'));
-                        // update the score
-                        UpdateScore(t.dataset.index,match,activePlayer,selectedT.dataset.value);
-                        // pass the turn 
-                        setTimeout(()=>{ 
-                            SwapActivePlayer() ;
-                            selectedT = 0;
-                        },3000);
-                    }
+                //validate the placement position
+                const match = CheckPlacement(t.dataset.index);
+
+                if (match === true)
+                {        
+                    //replace the grid target in the gridTiles[] with the selected tile
+                    gridTiles[t.dataset.index] = new Tile(selectedT.dataset.label);
+                    // remove it from the hand
+                    p1Hand.splice(selectedT.dataset.index,1);
+                    //redraw the grid and the P1 hand
+                    DrawGrid();
+                    DrawPlayerHand(1);
+                    // disable rotate btn
+                    rotateBtn.disabled = true;
+                    // recalculate the tiles in play
+                    cards = Array.from(document.getElementsByClassName('card'));
+                    // update the score
+                    //UpdateScore(t.dataset.index,match,1,selectedT.dataset.value);
+                    // // pass the turn 
+                    DisplayMessage("Player 1 passes the turn");
+                    setTimeout(()=>{ 
+                        SetActivePlayer(2) ;
+                        selectedT = 0;
+                    },3000); 
+
                 }
+             
             } else if (activePlayer == 1 && gameStarted === false) {
                 DisplayMessage("Please wait");
             } else {

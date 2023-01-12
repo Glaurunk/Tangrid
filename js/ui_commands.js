@@ -19,7 +19,6 @@ function InitUI()
         rulesDiv.classList.add('hidden');
         setTimeout(()=> {
             DisplayMessage("Game Begins",1000);
-            ShowActivePlayer();
             // Disable radio buttons
             playerOrderRbtns.forEach(btn => { 
                 btn.disabled = true;
@@ -38,10 +37,11 @@ function InitUI()
                 },3000);
             } else {
                 setTimeout(()=> { 
-                    SwapActivePlayer() },3000);
+                    SetActivePlayer(2) },3000);
             }
             // enable ui buttons
             setTimeout(()=> { 
+                ShowActivePlayer();
                 CountTime();
                 gameStarted = true;
                 if (playerOrder === 1) {             
@@ -83,36 +83,37 @@ function InitUI()
             }
         });
     });
+    
     //UNDO BUTTON
+    undoBtn.addEventListener('click', ()=> {
+        confirmCommand = 'undo';
+        modalLabel = '';
+        modalText = 'Undo the last Placement?';
+        document.querySelector('.modal-footer').style.visibility = 'visible';
+        $('#modal').modal('show');
+    });
+       
     //DISCARD & PASS BUTTON
+    discardBtn.addEventListener('click', ()=> {
+        confirmCommand = 'discard';
+        modalLabel.innerHTML = '';
+        modalText.innerHTML = 'Discard the current hand and draw 6?';
+        document.querySelector('.modal-footer').style.visibility = 'visible';
+        $('#modal').modal('show');
+    });
+
     //GIVE UP BUTTON
     endBtn.addEventListener('click', ()=> { 
-        confirmBtn.addEventListener('click', ()=> {
-            Clear();
-            $('#modal').modal('hide');
-            setTimeout(()=> {
-                modalLabel.innerHTML = "The CPU wins the game";
-                modalText.innerHTML = '';
-                document.querySelector('.modal-footer').style.visibility = 'hidden';
-                $('#modal').modal('show');
-                restartBtn.disabled = false;
-                exitBtn.disabled = false;
-                clearInterval(timer);
-            },1000);
-        });
+        confirmCommand = 'surrender';
         modalLabel.innerHTML = '';
         modalText.innerHTML = "Are you sure you want to surrender? Regardless of the current score you will loose the match";
         document.querySelector('.modal-footer').style.visibility = 'visible';
         $('#modal').modal('show');
     });
 
-
     //NEW GAME BUTTON
     restartBtn.addEventListener('click', ()=> { 
-        confirmBtn.addEventListener('click', ()=> { 
-            SetCookie('reload','true');
-            location.reload();
-        });
+        confirmCommand = 'restart';
         document.querySelector('.modal-footer').style.visibility = 'visible';
         modalLabel.innerHTML = '';
         modalText.innerHTML = "Are you sure you want to start a new game? All progress will be lost";
@@ -121,19 +122,75 @@ function InitUI()
 
     // EXIT BUTTON
     exitBtn.addEventListener('click', ()=> { 
-        confirmBtn.addEventListener('click', ()=> location.reload() );
+        confirmCommand = 'exit';
         document.querySelector('.modal-footer').style.visibility = 'visible';
         modalLabel.innerHTML = '';
         modalText.innerHTML = "Are you sure you want to exit to the main menu? All progress will be lost";
         $('#modal').modal('show');
     });
+
+    // CONFIRM BUTTON
+    confirmBtn.addEventListener('click', ()=> {
+        switch(confirmCommand)
+        {
+            case 'surrender':
+                $('#modal').modal('hide');
+                DisplayMessage("Player 1 yields");
+                setTimeout(()=> { Surrender() },1000);
+                break;
+            case 'restart':
+                SetCookie('reload','true');
+                location.reload();
+                break;
+            case 'exit':
+                location.reload();
+                break;
+            case 'discard':
+                $('#modal').modal('hide');
+                DisplayMessage("Player 1 discards and draws 6 <br> Player 1 passes the turn");
+                setTimeout(()=> { ResuffleAndPass(1) },2000);
+                break;
+            case 'undo':
+                Undo();
+                break;
+            default:
+                break;
+        }
+    });
 }
+
 
 // Undo last move
 function Undo()
 {
-    p1handDiv.appendChild();
+    console.log('undo');
 }
 
+// Ends the game and displayes the winner
+function GameOver()
+{   
+    Clear();
+    clearInterval(timer);
+    if (p1Score>p2Score) modalLabel.innerHTML = 'GAME OVER <br> PLAYER 1 WINS!';
+    else if (p1Score<p2Score) modalLabel.innerHTML = 'GAME OVER <br> THE CPU WINS!';
+    else modalLabel.innerHTML = 'GAME OVER <br> IT\'S A TIE!';
+    modalText.innerHTML = 'Final Score: ' + p1Score + ' - ' + p2Score + '. Time Elapsed: ' + timeSpan.innerHTML;
+    document.querySelector('.modal-footer').style.visibility = 'hidden';
+    $('#modal').modal('show');
+    restartBtn.disabled = false;
+    exitBtn.disabled = false;
+}
 
+// Ends the game if the player yields
+function Surrender()
+{
+    Clear();
+    modalLabel.innerHTML = 'GAME OVER <br> THE CPU WINS!';
+    modalText.innerHTML = 'Player 1 yielded';
+    document.querySelector('.modal-footer').style.visibility = 'hidden';
+    $('#modal').modal('show');
+    restartBtn.disabled = false;
+    exitBtn.disabled = false;
+    clearInterval(timer);
+}
 

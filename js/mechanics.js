@@ -99,7 +99,7 @@ function DrawCard(player)
 }
 
 // Checks if a placing position is valid by comparing neighboring labels
-function CheckPlacement(index)
+function CheckPlacement1(index)
 {
     let position = true;                // the returned variable
     let black = false;                  // true if the matching sides are black
@@ -225,6 +225,102 @@ function CheckPlacement(index)
     return match;
 }
 
+//Validates a move
+function CheckPlacement(index)
+{    
+    // TARGET DATA
+    const target = gridTiles[index];
+    const adj = GetAdjacentTiles(index);
+    let matches = [];
+    console.log('checking placement of tile ' + selectedT.dataset.label + ' for index ' + index);
+    //console.log(target);
+
+    // CONDITIONS   
+    let match = true;              // Is it a match?
+    let isEmpty = true;            // tile must be empty
+    let hasNeighbor = false;       // tile must have at least one neighbor
+    let colorMatch = true;         // Neighboring Colors must match
+    //let oneIsColor = true;         // At least one match must be with color
+    let innerFacing = true;        // A color side cannot face the edge
+
+    // Check if the target tile is empty
+    if (target.label != 'BBBB') isEmpty = false;
+
+    // Check if at least one of the adjacent tiles is not empty
+    for (let i=0; i<adj.length; i++) {
+        if (adj[i].tile.label != 'BBBB') hasNeighbor = true;
+    }
+
+    // Check if the tile faces the edge
+    if ((parseInt(index)+GRID_SIZE)%GRID_SIZE === 0) {
+        //console.log('FACING TOP');
+        if (selectedT.dataset.label.substr(0,1) != 'B') innerFacing = false;
+    }
+
+    if (parseInt(index) > ((GRID_SIZE*GRID_SIZE)-1) - GRID_SIZE) {
+        //console.log('FACING RIGHT');
+        if (selectedT.dataset.label.substr(1,1) != 'B') innerFacing = false;
+    }
+
+    if ((parseInt(index)+GRID_SIZE)%GRID_SIZE === GRID_SIZE-1) { 
+        //console.log('FACING BOTTOM');
+        if (selectedT.dataset.label.substr(2,1) != 'B') innerFacing = false;
+    }
+
+    if (parseInt(index) < GRID_SIZE) { 
+    // console.log('FACING LEFT');
+        if (selectedT.dataset.label.substr(3,1) != 'B') innerFacing = false;
+    }
+    
+    // Get the target's matches and validate them
+    console.log('getting matches...');
+    matches = GetMatches(adj);
+    console.log('resulting matches:' + matches.length);
+    console.log(matches);
+    console.log('validating matches...')
+    colorMatch = ValidateMatches(matches);
+
+
+    // If the player tries to place in an occupied square break with msg
+    if (isEmpty === false) {
+        if (activePlayer === 1) DisplayMessage('This square is occupied <br> Select an empty square');
+        else console.log('Not Empty');
+        match = false;
+    }
+
+    // If the player tries to place in an occupied tile break with msg
+    if (hasNeighbor === false) {
+        if (activePlayer === 1) DisplayMessage('A tile must be placed next to an other tile');
+        else console.log('Has no neighbor');
+        match = false;
+    }
+
+    // All neighboring colors must match
+    if (colorMatch === false) {
+        if (activePlayer === 1) DisplayMessage('Neighboring colors must match');
+        else console.log('No colormatch');
+        match = false;
+    }
+
+    // One neighboring color must not be black
+    // if (oneIsColor === false) {
+    //     if (activePlayer === 1) DisplayMessage('You must match with at least one non black color side');
+    //     else console.log('No non black');
+    //     match = false;
+    // }
+
+    // Sides facing the border must be black
+    if (innerFacing === false) {
+        if (activePlayer === 1) DisplayMessage('Only black sides can face the border');
+        else console.log('Borderfacing');
+        match = false;
+    }
+
+    if (match===true) console.log('MATCH!');
+    else console.log('FAIL...');
+    return match;
+}
+
 // Returns an array of tiles adjascent to the selected
 function GetAdjacentTiles(index)
 {
@@ -247,9 +343,10 @@ function GetAdjacentTiles(index)
 // Updates the score for a player
 function UpdateScore(index,match,player,value)
 {
-    let i=0;
-    let p1s = 0;
-    let p2s = 0;
+    let p1s = 0;        // p1 score
+    let p2s = 0;        // p2 score
+    let m = 0;          // number of sides matched
+    console.log('m='+m);
     let message = ""; 
     let ss = parseInt(value) > 1 ? 's' : '';
 
@@ -263,7 +360,7 @@ function UpdateScore(index,match,player,value)
 
     }
 
-    for (i; i<match.length; i++) {
+    for (let i=0; i<match.length; i++) {
         switch(match[i].type) {
             case '11':
                 if (player == 1) {
@@ -274,6 +371,7 @@ function UpdateScore(index,match,player,value)
                     p2s -= 2;
                     message += "<br>&bull; Rival color match: penalty -2 points.";
                 }
+                m++;
                 break;
             case '22':
                 if (player == 1) {
@@ -284,6 +382,7 @@ function UpdateScore(index,match,player,value)
                     p2s += 2;
                     message += "<br>&bull; Color match: bonus 2 points.";
                 }
+                m++;
                 break;
             case '1J':
             case 'J1':
@@ -295,6 +394,7 @@ function UpdateScore(index,match,player,value)
                     p2s -= 1;
                     message += "<br>&bull; Opposite color match with Joker: penalty -1 point.";
                 }
+                m++;
                 break;
             case '2J':
             case 'J2':
@@ -306,37 +406,39 @@ function UpdateScore(index,match,player,value)
                     p2s += 1;
                     message += "<br>&bull; Color match with Joker: bonus 1 point.";
                 }
+                m++;
                 break;
             case 'JJ':
                 if (player == 1) p1s += 3;
                 if (player == 2) p2s += 3;
                 message += "<br>&bull; Joker match: bonus 3 points";
-                message;
+                m++;
                 break;
+            case 'BB':
             case 'B1':
             case '1B':
             case 'B2':
             case '2B':
             case 'BJ':
             case 'JB':
-                i--;
                 break;
             default:
                 console.log('Error in UpdateScore. Invalid pair');
                 break;
         }
-        if (i == 1)  {
+        console.log('m='+m);
+        if (m == 1)  {
             if (player == 1) p1s *= 2;
             if (player == 2) p2s *= 2;
             message += '<br>&bull; Double Match! Score 2X!';
         }
-        if (i == 2)  {
+        else if (m == 2)  {
             if (player == 1) p1s *= 3;
             if (player == 2) p2s *= 3;
             message += '<br>&bull; Triple Match! Score 3X!';
 
         }
-        if (i == 3)  {
+        else if (m == 3)  {
             if (player == 1) p1s *= 5;
             if (player == 2) p2s *= 5;
             message += '<br>&bull; Full Match! Score 5X!';
@@ -362,15 +464,97 @@ function FlipP2Hand(facing)
     }
     //DrawPlayerHand(2);  
 }
-//////////////////////////////////////////////////////////
-/// AI
-//////////////////////////////////////////////////////////
-// Calculates and performs a tile placement for Player 2
+
+// Sets the sequence of actions for Player 2
 function Player2Turn()
 {
-    p2thinkDiv.classList.add('shown');
-    setTimeout(() => { DrawCard(2) },P2_THINK_TIME/3);
-    setTimeout(() => { PlayTile() }, P2_THINK_TIME);
-    setTimeout(() => { p2thinkDiv.classList.remove('shown') }, P2_THINK_TIME*1.5);
-    setTimeout(() => { SwapActivePlayer() }, P2_THINK_TIME*2);
+    setTimeout(()=> {
+        p2thinkDiv.classList.add('shown');
+        setTimeout(() => { DrawCard(2) },P2_THINK_TIME/3);
+        setTimeout(() => { PlayTile() }, P2_THINK_TIME);
+    },1000);
+}
+
+// Discsard the hand. Draw 6 and pass
+function ResuffleAndPass(player)
+{
+    if (player === 1) {
+        p1Hand.splice(0,p1Hand.length);
+        PopulatePlayersHand(1);
+        DrawPlayerHand(1);
+        cards = Array.from(document.getElementsByClassName('card')); 
+        setTimeout(()=>{ SetActivePlayer(2) },1000);
+    } else  {
+        DisplayMessage("The Computer discards and draws 6 <br> The Computer passes the turn");
+        p2Hand.splice(0,p2Hand.length);
+        PopulatePlayersHand(2);
+        DrawPlayerHand(2);
+        cards = Array.from(document.getElementsByClassName('card')); 
+        setTimeout(()=>{ SetActivePlayer(1) },1000);
+    }
+
+}
+
+// accepts a targets neighbors and returns the matches with the selected Tile
+function GetMatches(adjacent)
+{
+    // filter out the neighboring empty tiles
+    let adjs = adjacent.filter(adj => { return adj.tile.label != 'BBBB'});
+    let matches = [];
+    let selLabel = selectedT.dataset.label;
+    //console.log(selectedT.dataset.label);
+    console.log('filtered neighbors:' + adjs.length);
+    //console.log(adjs);
+    adjs.forEach(adj => {
+        let newMatch = new Pair(adj.pos, 'BB');
+        let type = 'BB';
+        switch(adj.pos)
+        {
+            case 'top':
+                type = selLabel.substr(0,1) + adj.tile.label.substr(2,1);
+                break;
+            case 'right':
+                type = selLabel.substr(1,1) + adj.tile.label.substr(3,1);
+                break;
+            case 'bottom':
+                type = selLabel.substr(2,1) + adj.tile.label.substr(0,1);
+                break;
+            case 'left':
+                type = selLabel.substr(3,1) + adj.tile.label.substr(1,1);
+                break;
+            default:
+                type = 'BB';
+                break;
+        }
+        newMatch.type = type;
+        matches.push(newMatch);
+    });
+    return matches;
+}
+
+// accepts an array of matches and checks if there is a valid match
+function ValidateMatches(matches)
+{
+    let validMatch = true;
+    for (let i=0; i<matches.length; i++)
+    {   
+        if (matches[i].type == 'BB') console.log('B===B ---> ignore');  
+        else if (CheckIfMatch(matches[i].type) === false) validMatch = false;
+    }
+    return validMatch;
+}
+
+// checks if a pair of colors match. 
+function CheckIfMatch(pair)
+{
+    let match = false;
+    const a = pair.substr(0,1);
+    const b = pair.substr(1,1);
+    if (a === 'B' || b === 'B') {
+        console.log(a + '===' + b + ' ---> false');  
+        return false;
+    } 
+    else if (a === b || a === 'J' || b === 'J') match = true;
+    console.log(a + '===' + b + ' ---> ' + match);
+    return match;    
 }

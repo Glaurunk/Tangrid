@@ -106,6 +106,7 @@ let p2Score = 0;
 let playerOrder = 1;
 let difficulty = 1;
 let timer;              // assigned inside CountTime()
+let confirmCommand;     // defines the confirm button's functionality
 
 //TILES
 //The initial grid state
@@ -114,12 +115,13 @@ for (let i=0; i<GRID_SIZE*GRID_SIZE; i++) {
     const t = new Tile("BBBB",0,0,C_BLACK);
     gridTiles.push(t);
 }
-gridTiles[10] = new Tile("B212");
-gridTiles[11] = new Tile("1J1B");
+// gridTiles[7] = new Tile("B212");
+// gridTiles[10] = new Tile("B212");
+// gridTiles[11] = new Tile("1J1B");
 gridTiles[12] = new Tile("1212");
-gridTiles[13] = new Tile("121B");
-gridTiles[14] = new Tile("12B2");
-gridTiles[17] = new Tile("22B2");
+// gridTiles[13] = new Tile("121B");
+// gridTiles[14] = new Tile("12B2");
+// gridTiles[17] = new Tile("22B2");
 
    
 
@@ -193,6 +195,8 @@ const p2ScoreDiv = document.getElementById("p2-score");
 const p2thinkDiv = document.getElementById('player2-thinking');
 const modalText = document.getElementById('modal-text');
 const modalLabel = document.getElementById('modal-label');
+  const timeSpan = document.getElementById('time');
+
 // UI BUTTONS
 const settingsBtn = document.getElementById("settings-btn");
 const rulesBtn = document.getElementById("rules-btn");

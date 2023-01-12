@@ -55,12 +55,11 @@ function FindAvailablePositions()
 }
 
 //The CPU places a random matching tile from its hand to a random available position
+// If No cards match the placement the CPU resuffles and passes
 function RandomMove()
 {
     console.log('cpu plays:');
     let placement = false;
-    let matches = [];
-
     // Find all available positions
     let pos = FindAvailablePositions();
     //console.log(pos);
@@ -73,7 +72,7 @@ function RandomMove()
     const x = Math.floor(Math.random()*pos.length);
     let dom = document.getElementById(pos[x].id);
     console.log('random tile index:'+dom.dataset.index);
-    dom.classList.add('selected2');
+    //dom.classList.add('selected2');
 
     // get the cpu hand
     let p2h = cards.filter(card => { return card.dataset.placing == 'player2-hand'});
@@ -81,56 +80,35 @@ function RandomMove()
     //p2h.sort((a,b) => { return parseInt(a.dataset.value) < parseInt(b.dataset.value)  });
     //console.log(p2h);
     // Try to match the random position with a tile from the hand
-    for (let c=0; c<p2h.length; c++)
+    for (let i=0; i<p2h.length; i++)
     {
-        console.log('card:' + c);
-        let match = false;
-        selectedT = p2h[c];
-        selectedT.classList.add('selected3');
+        console.log('card:' + i);
+        selectedT = p2h[i];
+        //selectedT.classList.add('selected3');
         // console.log(pos[x].matches);
         // Check if a tile matches the selected move and keep rotating it until a match has been found or all possivble matches have failed
-        for (let r=0; r<4; r++ )
+        for (let r=1; r<5; r++)
         {
+            console.log("Rotation " + r + ' for card ' + i);
             // for each side that has to be matched perform a check
-            for (let m=0; m<pos[x].matches.length; m++)
-            {
-                let can = false;
-                switch(pos[x].matches[m].side)
-                {
-                    case 'top':
-                        can = CheckIfMatch(pos[x].matches[m].color,selectedT.dataset.label.substr(0,1));
-                        break;
-                    case 'right':
-                        can = CheckIfMatch(pos[x].matches[m].color,selectedT.dataset.label.substr(1,1));
-                        break;
-                    case 'bottom':
-                        can = CheckIfMatch(pos[x].matches[m].color,selectedT.dataset.label.substr(2,1));
-                        break;
-                    case 'left':
-                        can = CheckIfMatch(pos[x].matches[m].color,selectedT.dataset.label.substr(3,1));
-                        break;
-                    default:
-                        break;
-                }
-                match = can;
-                //if a single check fails break the operation, the tile does not match
-                if (can===false) break;
-                else matches.push(can);
-            }
-            //if a match has been found break the operation
-            if (match != false) break;
-            // else rotate the tile and try again
-            else {
-                matches = [];
+            placement = CheckPlacement(dom.dataset.index);
+            // if a match has been found break out of the rotation
+            if (placement === true) break;
+            else { 
+                console.log("No valid moves for the CPU for card " + i + ' rotation ' + r);
                 RotateTile();
-            }
+            }       
         }
-        //console.log('match='+match);
-        if (match != false) {
-            placement = true;
+
+        // if a match has been found break out of the card loop as well
+        if (placement === true) {
+            console.log ('CPU MATCH for card '+ i);
             break;
+        } else {
+            console.log("No valid moves for the CPU for card " + i + ' at all rotations');
         }
     };
+    // After the loop if a placement is to be made proceed else resuffle and pass
     if (placement === true) {
         //replace the grid target in the gridTiles[] with the selected tile
         gridTiles[dom.dataset.index] = new Tile(selectedT.dataset.label);
@@ -142,33 +120,13 @@ function RandomMove()
         // recalculate the tiles in play
         cards = Array.from(document.getElementsByClassName('card'));
         // update the score
-        console.log(matches);
-
-        //UpdateScore(dom.dataset.index,match,activePlayer,selectedT.dataset.value);
-            
-        
-        // pass the turn 
-    } else  {
-        console.log('No valid moves for the CPU');
-    }
-}
-
-
-// A Helper that receives a label and a position and returns a character
-function GetColorFromPosition(label,position)
-{
-    switch(position)
-    {
-        case 'top':
-            return label.substr(0,1);
-        case 'right':
-            return label.substr(1,1);
-        case 'bottom':
-            return label.substr(2,1);
-        case 'left':
-            return label.substr(3,1);
-        default:
-            break;
+        //UpdateScore(dom.dataset.index,matches,2,selectedT.dataset.value);  
+        DisplayMessage("The Computer passes the turn");
+        setTimeout(()=> { SetActivePlayer(1) },2000);  
+        //     // pass the turn 
+    } else {
+        console.log('resuffle CPU');
+        ResuffleAndPass(2);
     }
 }
 
@@ -190,30 +148,5 @@ function CheckForMatch(tile)
     return matches;
 }
 
-//reverses a posiiotn. Used for referencing neighboring opposite positions
-function ReversePosition(pos)
-{
-    switch(pos)
-    {
-        case 'top':
-            return 'bottom';
-        case 'right':
-            return 'left';
-        case 'bottom':
-            return 'top';
-        case 'left':
-            return 'right';
-        default:
-            break;
-    }
-}
 
-// checks if a pair of colors match
-function CheckIfMatch(a,b)
-{
-    let match = false;
-    if (a === 'B' || b === 'B') match = false;
-    else if (a === b || a === 'J' || b === 'J') match = a+b;
-    //console.log(a + '===' + b + '--->' + match);
-    return match;    
-}
+

@@ -28,7 +28,6 @@ function CountTime()
   // If the minutes or seconds are less than 10 add a zero
   let preS = "0";
   let preM = "0";
-  const timeSpan = document.getElementById('time');
   let minutes = 0;
   let seconds = 0;
   // start clock
@@ -53,11 +52,15 @@ function ShowActivePlayer()
 }
 
 // passes the turn
-function SwapActivePlayer()
+function SetActivePlayer(player)
 {
-  if (activePlayer === 1) activePlayer = 2;
-  else activePlayer = 1;
+  // check for available positions
+  let x = FindAvailablePositions();
+  if (x.length === 0) GameOver();
+
+  activePlayer = player;
   if (activePlayer === 2) {
+    DisplayMessage('The Computer plays');
     undoBtn.disabled = true;
     discardBtn.disabled = true;
     rotateBtn.disabled = true;
@@ -67,12 +70,16 @@ function SwapActivePlayer()
     Player2Turn();
   }
   if (activePlayer === 1) {
-    undoBtn.disabled = false;
-    discardBtn.disabled = false;
-    endBtn.disabled = false;
-    restartBtn.disabled = false;
-    exitBtn.disabled = false;
-    DrawCard(1);
+    p2thinkDiv.classList.remove('shown');
+    DisplayMessage('Player 1 plays');
+    setTimeout(() => { 
+      undoBtn.disabled = false;
+      discardBtn.disabled = false;
+      endBtn.disabled = false;
+      restartBtn.disabled = false;
+      exitBtn.disabled = false;
+      DrawCard(1);
+    },2000);
   }
   ShowActivePlayer();
 }
@@ -111,4 +118,40 @@ function GetCookie(cname) {
     }
   }
   return "";
+}
+
+//reverses a position. Used for referencing neighboring opposite positions
+function ReversePosition(pos)
+{
+    switch(pos)
+    {
+        case 'top':
+            return 'bottom';
+        case 'right':
+            return 'left';
+        case 'bottom':
+            return 'top';
+        case 'left':
+            return 'right';
+        default:
+            break;
+    }
+}
+
+// A Helper that receives a label and a position and returns a character
+function GetColorFromPosition(label,position)
+{
+    switch(position)
+    {
+        case 'top':
+            return label.substr(0,1);
+        case 'right':
+            return label.substr(1,1);
+        case 'bottom':
+            return label.substr(2,1);
+        case 'left':
+            return label.substr(3,1);
+        default:
+            break;
+    }
 }
