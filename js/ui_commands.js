@@ -17,6 +17,7 @@ function InitUI()
         homeScreen.classList.add('hidden');
         settingsDiv.classList.add('hidden');
         rulesDiv.classList.add('hidden');
+        SetBoxesBorder(1);
         setTimeout(()=> {
             DisplayMessage("Game Begins",1000);
             // Disable radio buttons
@@ -32,12 +33,13 @@ function InitUI()
             }); 
             // Start by player order
             if (playerOrder === 1) {
+                SetDetailsColor(1);
                 setTimeout(()=> { 
                     DrawCard(1) ;
-                },3000);
+                },2000);
             } else {
                 setTimeout(()=> { 
-                    SetActivePlayer(2) },3000);
+                    SetActivePlayer(2) },2000);
             }
             // enable ui buttons
             setTimeout(()=> { 
@@ -45,16 +47,13 @@ function InitUI()
                 CountTime();
                 gameStarted = true;
                 if (playerOrder === 1) {             
-                    undoBtn.disabled = false;
-                    discardBtn.disabled = false;
-                    endBtn.disabled = false;
-                    restartBtn.disabled = false;
-                    exitBtn.disabled = false;
+                    ToggleButtons(0,1,1,1,1);
                 }
-            }, 3000);
+            }, 2000);
         });
     });
 
+    // ROTATE BUTTON
     rotateBtn.addEventListener('click', ()=> {
         if (selectedT && gameStarted === true && playerOrder === 1) RotateTile();
     });
@@ -82,15 +81,6 @@ function InitUI()
                 } 
             }
         });
-    });
-    
-    //UNDO BUTTON
-    undoBtn.addEventListener('click', ()=> {
-        confirmCommand = 'undo';
-        modalLabel = '';
-        modalText = 'Undo the last Placement?';
-        document.querySelector('.modal-footer').style.visibility = 'visible';
-        $('#modal').modal('show');
     });
        
     //DISCARD & PASS BUTTON
@@ -157,19 +147,16 @@ function InitUI()
                 break;
         }
     });
-}
 
+    //PASS THE TURN BUTTON
+    passDiv.addEventListener('click', ()=> { PassTheTurn() });
 
-// Undo last move
-function Undo()
-{
-    console.log('undo');
 }
 
 // Ends the game and displayes the winner
 function GameOver()
 {   
-    Clear();
+    gameStarted = false;
     clearInterval(timer);
     if (p1Score>p2Score) modalLabel.innerHTML = 'GAME OVER <br> PLAYER 1 WINS!';
     else if (p1Score<p2Score) modalLabel.innerHTML = 'GAME OVER <br> THE CPU WINS!';
@@ -177,20 +164,63 @@ function GameOver()
     modalText.innerHTML = 'Final Score: ' + p1Score + ' - ' + p2Score + '. Time Elapsed: ' + timeSpan.innerHTML;
     document.querySelector('.modal-footer').style.visibility = 'hidden';
     $('#modal').modal('show');
-    restartBtn.disabled = false;
-    exitBtn.disabled = false;
+    ToggleButtons(0,0,0,1,1);
 }
 
 // Ends the game if the player yields
 function Surrender()
 {
-    Clear();
+    gameStarted = false;
     modalLabel.innerHTML = 'GAME OVER <br> THE CPU WINS!';
     modalText.innerHTML = 'Player 1 yielded';
     document.querySelector('.modal-footer').style.visibility = 'hidden';
     $('#modal').modal('show');
-    restartBtn.disabled = false;
-    exitBtn.disabled = false;
+    ToggleButtons(0,0,0,1,1);
     clearInterval(timer);
 }
 
+// sets the color of the details div to a different one or toggles between two colors
+function SetDetailsColor(player=0)
+{
+    if (player === 1) {
+        detailsUl.classList.remove('p2');
+        detailsUl.classList.add('p1');
+    } else if (player === 2) {
+        detailsUl.classList.remove('p1');
+        detailsUl.classList.add('p2');
+    } else {
+        if (detailsUl.classList.contains('p1')) {
+            detailsUl.classList.remove('p1');
+            detailsUl.classList.add('p2');
+        } else if (detailsUl.classList.contains('p2')) {
+            detailsUl.classList.remove('p2');
+            detailsUl.classList.add('p1');
+        }
+    }
+}
+
+// Toggles the boxes border
+function SetBoxesBorder(status=0)
+{
+    if (status===1) {
+        boxes.forEach(box => box.style.borderColor = 'white');
+    } else {
+        boxes.forEach(box => box.style.borderColor = 'transparent');
+    }
+}
+
+// Toggles the visibility of the pass div
+function TogglePassDiv(status=0)
+{
+    p2thinkDiv.classList.remove('shown');
+    if (status===1) {
+       passDiv.classList.add('show');
+       setTimeout(()=> {
+        turnHasEnded = true;
+       },300);
+
+    } else {
+        turnHasEnded = false;
+        passDiv.classList.remove('show');
+    }
+}

@@ -89,6 +89,7 @@ function RandomMove()
         // Check if a tile matches the selected move and keep rotating it until a match has been found or all possivble matches have failed
         for (let r=1; r<5; r++)
         {
+            globalMatches = [];
             console.log("Rotation " + r + ' for card ' + i);
             // for each side that has to be matched perform a check
             placement = CheckPlacement(dom.dataset.index);
@@ -119,11 +120,13 @@ function RandomMove()
         DrawPlayerHand(2);
         // recalculate the tiles in play
         cards = Array.from(document.getElementsByClassName('card'));
-        // update the score
-        //UpdateScore(dom.dataset.index,matches,2,selectedT.dataset.value);  
-        DisplayMessage("The Computer passes the turn");
-        setTimeout(()=> { SetActivePlayer(1) },2000);  
-        //     // pass the turn 
+         // Notify the UI
+        DisplayMessage("The Computer 1 places a " + selectedT.dataset.label + " tile on square " + GetPositionFormIndex(dom.dataset.index));
+        cards[parseInt(dom.dataset.index)+6].classList.add('selected1');
+         // update the score
+        UpdateScore();  
+        // pass the turn 
+        TogglePassDiv(1);
     } else {
         console.log('resuffle CPU');
         ResuffleAndPass(2);

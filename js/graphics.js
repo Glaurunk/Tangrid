@@ -36,37 +36,33 @@ function DrawTile(tile,parent,index="NULL")
                     rotateBtn.disabled = true;
                     // recalculate the tiles in play
                     cards = Array.from(document.getElementsByClassName('card'));
+                    // Notify the UI
+                    DisplayMessage("Player 1 places a " + selectedT.dataset.label + " tile on square " + GetPositionFormIndex(t.dataset.index));
                     // update the score
-                    //UpdateScore(t.dataset.index,match,1,selectedT.dataset.value);
+                    UpdateScore();
                     // // pass the turn 
-                    DisplayMessage("Player 1 passes the turn");
-                    setTimeout(()=>{ 
-                        SetActivePlayer(2) ;
-                        selectedT = 0;
-                    },3000); 
-
+                    TogglePassDiv(1);
                 }
              
             } else if (activePlayer == 1 && gameStarted === false) {
                 DisplayMessage("Please wait");
             } else {
-                DisplayMessage("Please wait" + '<br>' + 'It\'s the turn of Player 2');
+                DisplayMessage("Please wait");
             }
         });
     }
 
-    // show the back side of the flipped tiles. 
-    if (tile.facing == 1) card.classList.add('flipped');
     //add event listener for selection
     card.addEventListener('mousedown', (e)=> {
         if (activePlayer == 1 && gameStarted === true) {
             cards.forEach(card => card.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedT = card;
-            if (card.dataset.placing == 'player1-hand') rotateBtn.disabled = false;
+            if (card.dataset.placing == 'player1-hand') {
+                rotateBtn.disabled = false;
+                card.classList.add('selected');
+                selectedT = card;
+                console.log("selected tile " + card.dataset.label + " with id " + card.id);
+            }
             else rotateBtn.disabled = true;
-            console.log("selected tile " + card.dataset.label + " with id " + card.id);
-            if (e.shiftKey) console.log("shift");
         } else if (activePlayer == 1 && gameStarted === false) {
             DisplayMessage("Please wait");
         } else {
@@ -140,22 +136,31 @@ function DrawTile(tile,parent,index="NULL")
     //Add the back to player 2 cards. 
     // Adding the back side to player 1 makes the drag effect show the back
     if (parent.id == "player2-hand") {
+            // show the back side of the flipped tiles. 
+        card.classList.add('flipped');
         const back = document.createElement('div');
         back.classList.add('card__back');
         inner.appendChild(back);
         //  create the back side tile
+        const svgBack = document.createElementNS(xmlns, 'svg');
+        svgBack.setAttributeNS(null, "viewBox", "0 0 " + TILE_SIZE + " " + TILE_SIZE);
+        svgBack.setAttributeNS(null, "width", TILE_SIZE);
+        svgBack.setAttributeNS(null, "height", TILE_SIZE);
+        svgBack.style.display = "block";
+        back.appendChild(svgBack);
+
         const grect = document.createElementNS(xmlns,'g');
         const rect = document.createElementNS(xmlns,'polygon');
         rect.setAttributeNS(null, 'display','inline');
         // rect.setAttributeNS(null, 'stroke',tile.lines);
         // rect.setAttributeNS(null, 'stroke-width',1);
         rect.setAttributeNS(null, 'fill', C_GREY);
-        rect.setAttributeNS(null, 'points','0,0, 0,100, 100,0, 100,100');
+        rect.setAttributeNS(null, 'points','0,0, 0,100, 100,100 100,0');
         grect.appendChild(rect);
-        back.appendChild(grect);
+        svgBack.appendChild(grect);
     }
 
-    if (tile.facing == 1) card.style.transform = "rotateY(180deg)";
+    //if (tile.facing == 1) card.style.transform = "rotateY(180deg)";
 }
 
 // Draws the gridTiles array inside the grid row elements
@@ -185,8 +190,6 @@ function DrawPlayerHand(player=0)
     {
         p2handDiv.innerHTML = "";
         for (let i=0; i<p2Hand.length; i++) {
-            // Show P2 hand
-            p2Hand[i].facing = 1;
             DrawTile(p2Hand[i], p2handDiv, i);
         }
     }

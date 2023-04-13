@@ -21,6 +21,24 @@ body {
                     }
                 }
             }
+            #details {
+                width: 90%;
+                margin: 2rem auto;
+                background-color: transparent;
+                ul {
+                    background-color: transparent;
+                    &.p1 {
+                        .list-group-item {
+                            background-color: var(--c-one);
+                        }
+                    }
+                    &.p2 {
+                        .list-group-item {
+                            background-color: var(--c-two);
+                        }
+                    }
+                }
+            }
         }
         #middle-side {
             #player2-side {
@@ -35,7 +53,6 @@ body {
                     padding: 1rem;
                     border: 1px solid var(--c-white);
                     background-color: var(--c-two);
-                    opacity: 0.98;
                     position: absolute;
                     text-align: center;
                     top: -150px;
@@ -59,6 +76,24 @@ body {
                     }
                 }
             }
+            .letters {
+                display: flex;
+                margin: 0 auto 0.5rem 26px;
+                justify-content: center;
+                .letter {
+                    font-size: 24px;
+                    text-align: center;
+                    width: 100px;
+                }
+            }
+            .numbers {
+                margin: 26px 1rem 0 0;
+                .number {
+                    font-size: 24px;
+                    text-align: right;
+                    height: 100px;
+                }
+            }
             #grid {
                 position: relative;
                 display: flex;
@@ -75,6 +110,7 @@ body {
                 }
             }
             #player1-side {
+                position: relative;
                 h3 {
                     color: var(--c-one);
                 }
@@ -88,18 +124,36 @@ body {
                         margin: 0 .5rem;
                     }
                 }
+                #pass {
+                    position: absolute;
+                    top: 300px;
+                    transition: .3s;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 1rem;
+                    border: 1px solid var(--c-white);
+                    border-radius: .5rem;
+                    background-color: var(--c-dark);
+                    &.show {
+                        top: 16px;
+                        transition: .3s;
+                    }
+                }
             }
         }
         #right-side {
             width: 100%;
+            .box {
+                border: 1px solid transparent;
+                border-radius: .5rem;
+                margin-bottom: 1rem;
+            }
             #time-div {
                 text-align: center;
                 margin: 60px 0 20px;
-                font-size: 1.2rem;
             }
             #now-playing {
                 text-align: center;
-                font-size: 1.2rem;
             }
             #score  {
                 margin: 50px auto 25px;
@@ -112,7 +166,9 @@ body {
                 }
             }
             #messages {
-               h4 {
+               height: 250px;
+               overflow-y: scroll; 
+               h5 {
                 text-align: center;
                }
                 width: 90%;

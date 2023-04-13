@@ -13,13 +13,21 @@ function MakeId()
 function DisplayMessage(text,delay=0)
 {
   setTimeout( ()=> {
-    messagesDiv.innerHTML = "";
     const msg = document.createElement('div');
     msg.classList.add('message');
     msg.innerHTML = text;
     messagesDiv.appendChild(msg);
-    //setTimeout(()=> {  messagesDiv.innerHTML = "";}, 5500);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }, delay);
+}
+
+// displays a message in the message area
+function DisplayDetails(text)
+{
+    const msg = document.createElement('li');
+    msg.classList.add('list-group-item');
+    msg.innerHTML = text;
+    detailsUl.appendChild(msg);
 }
 
 // counts and displays the elapsed time
@@ -47,53 +55,59 @@ function CountTime()
 // shows the active player
 function ShowActivePlayer()
 {
-  if (activePlayer == 2) nowPlaying.innerHTML = "Now Playing: Player 2";
-  else nowPlaying.innerHTML = "Now Playing: Player 1";
+  nowPlaying.innerHTML = activePlayer;
 }
 
 // passes the turn
 function SetActivePlayer(player)
 {
+  Clear();
   // check for available positions
   let x = FindAvailablePositions();
   if (x.length === 0) GameOver();
 
   activePlayer = player;
   if (activePlayer === 2) {
+    SetDetailsColor(2);
     DisplayMessage('The Computer plays');
-    undoBtn.disabled = true;
-    discardBtn.disabled = true;
-    rotateBtn.disabled = true;
-    endBtn.disabled = true;
-    restartBtn.disabled = true;
-    exitBtn.disabled = true;
+    ToggleButtons(0,0,0,0,0);
     Player2Turn();
   }
   if (activePlayer === 1) {
-    p2thinkDiv.classList.remove('shown');
     DisplayMessage('Player 1 plays');
+    SetDetailsColor(1);
     setTimeout(() => { 
-      undoBtn.disabled = false;
-      discardBtn.disabled = false;
-      endBtn.disabled = false;
-      restartBtn.disabled = false;
-      exitBtn.disabled = false;
+      ToggleButtons(2,1,1,1,1);
       DrawCard(1);
     },2000);
   }
   ShowActivePlayer();
 }
 
+// Toggles UI buttons on (1) and off (0). Other values leave the state unchanged
+function ToggleButtons(rotate=2,discard=2,surrender=2,restart=2,exit=2)
+{
+  if (rotate === 1) rotateBtn.disabled = false;
+  else if (rotate === 0) rotateBtn.disabled = true;
+
+  if (discard === 1) discardBtn.disabled = false;
+  else if (rotate === 0) discardBtn.disabled = true;
+
+  if (surrender === 1) endBtn.disabled = false;
+  else if (rotate === 0) endBtn.disabled = true;
+
+  if (restart === 1) restartBtn.disabled = false;
+  else if (rotate === 0) restartBtn.disabled = true;
+
+  if (exit === 1) exitBtn.disabled = false;
+  else if (rotate === 0) exitBtn.disabled = true;
+}
+
 // Clears State and Data
 function Clear()
 {
-  gameStarted = false;
-  rotateBtn.disabled = true;
-  undoBtn.disabled = true;
-  discardBtn.disabled = true;
-  endBtn.disabled = true;
-  restartBtn.disabled = true;
-  exitBtn.disabled = true;
+  selectedT = 0;
+  detailsUl.innerHTML = "";
 }
 
 // Sets a cookie for a given time in ms
@@ -155,3 +169,25 @@ function GetColorFromPosition(label,position)
             break;
     }
 }
+
+// Moves the last character inside a 4 characters string to the front
+function RotateString(string)
+{
+    if (string.length != 4) return;
+    var b = string.substr(0,3);
+    var a = string.substr(3,1);
+    selectedT.dataset.label = a+b;
+}
+
+// Returns an alphnumerical position on the grid based on an index
+function GetPositionFormIndex(index)
+{
+    const a = 65 + Math.floor(index/5); 
+    const b = 1 + index%5;
+    //console.log('a='+a + ',b='+b);
+    return String.fromCharCode(a)+b;
+}
+
+
+
+

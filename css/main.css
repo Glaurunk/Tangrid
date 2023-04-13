@@ -8,11 +8,11 @@
   --c-grey: #333333;
   --c-black: #000000;
   --c-selected: #ffda09;
-  --c-selected1: #ff0000;
-  --c-selected2: #00ff00;
-  --c-selected3: #0000ff;
-  --c-selected4: #00ffff;
-  --c-dark: #151527;
+  --c-selected1: #d85858;
+  --c-selected2: #097e09;
+  --c-selected3: #353594;
+  --c-selected4: #1a7e7e;
+  --c-dark: #1e1e38;
 }
 
 body {
@@ -66,6 +66,20 @@ body #content #left-side #panel button {
 body #content #left-side #panel button:disabled {
   color: var(--c-white);
 }
+body #content #left-side #details {
+  width: 90%;
+  margin: 2rem auto;
+  background-color: transparent;
+}
+body #content #left-side #details ul {
+  background-color: transparent;
+}
+body #content #left-side #details ul.p1 .list-group-item {
+  background-color: var(--c-one);
+}
+body #content #left-side #details ul.p2 .list-group-item {
+  background-color: var(--c-two);
+}
 body #content #middle-side #player2-side {
   position: relative;
   text-align: center;
@@ -79,7 +93,6 @@ body #content #middle-side #player2-side #player2-thinking {
   padding: 1rem;
   border: 1px solid var(--c-white);
   background-color: var(--c-two);
-  opacity: 0.98;
   position: absolute;
   text-align: center;
   top: -150px;
@@ -102,6 +115,24 @@ body #content #middle-side #player2-side #player2-hand {
 body #content #middle-side #player2-side #player2-hand .card {
   margin: 0 0.5rem;
 }
+body #content #middle-side .letters {
+  display: flex;
+  margin: 0 auto 0.5rem 26px;
+  justify-content: center;
+}
+body #content #middle-side .letters .letter {
+  font-size: 24px;
+  text-align: center;
+  width: 100px;
+}
+body #content #middle-side .numbers {
+  margin: 26px 1rem 0 0;
+}
+body #content #middle-side .numbers .number {
+  font-size: 24px;
+  text-align: right;
+  height: 100px;
+}
 body #content #middle-side #grid {
   position: relative;
   display: flex;
@@ -118,6 +149,7 @@ body #content #middle-side #grid #score-grid {
   height: 520px;
 }
 body #content #middle-side #player1-side {
+  position: relative;
   text-align: center;
 }
 body #content #middle-side #player1-side h3 {
@@ -132,17 +164,35 @@ body #content #middle-side #player1-side #player1-hand {
 body #content #middle-side #player1-side #player1-hand .card {
   margin: 0 0.5rem;
 }
+body #content #middle-side #player1-side #pass {
+  position: absolute;
+  top: 300px;
+  transition: 0.3s;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;
+  border: 1px solid var(--c-white);
+  border-radius: 0.5rem;
+  background-color: var(--c-dark);
+}
+body #content #middle-side #player1-side #pass.show {
+  top: 16px;
+  transition: 0.3s;
+}
 body #content #right-side {
   width: 100%;
+}
+body #content #right-side .box {
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
 }
 body #content #right-side #time-div {
   text-align: center;
   margin: 60px 0 20px;
-  font-size: 1.2rem;
 }
 body #content #right-side #now-playing {
   text-align: center;
-  font-size: 1.2rem;
 }
 body #content #right-side #score {
   margin: 50px auto 25px;
@@ -155,10 +205,12 @@ body #content #right-side #score #p2-score {
   color: var(--c-two);
 }
 body #content #right-side #messages {
+  height: 250px;
+  overflow-y: scroll;
   width: 90%;
   margin: auto;
 }
-body #content #right-side #messages h4 {
+body #content #right-side #messages h5 {
   text-align: center;
 }
 body #content #right-side #messages .message {
@@ -326,6 +378,7 @@ button.icon-btn:focus {
   width: 100px;
   height: 100px;
   border: 0;
+  background-color: transparent;
 }
 .card.selected .card__inner {
   border: 3px solid var(--c-selected);
@@ -337,7 +390,7 @@ button.icon-btn:focus {
   border: 3px solid var(--c-selected2);
 }
 .card.selected3 .card__inner {
-  border: 5px solid var(--c-selected3);
+  border: 3px solid var(--c-selected3);
 }
 .card.selected4 .card__inner {
   border: 3px solid var(--c-selected4);
@@ -363,6 +416,7 @@ button.icon-btn:focus {
   justify-content: center;
   align-items: center;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
 }
 .card .card__inner .card__back {
   position: absolute;
@@ -375,6 +429,8 @@ button.icon-btn:focus {
   justify-content: center;
   align-items: center;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari */
+  transform: rotateY(180deg);
 }
 
 #home-screen {

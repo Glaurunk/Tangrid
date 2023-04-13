@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Stathis Andreou @deepSeaCoding.com">
     <meta name="description" content="A game of colors and triangles">
-    <title>Tangrid v.3.0</title>
+    <title>Tangrid v.0.5.1</title>
     <link rel="stylesheet" href="css/all.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -62,7 +62,7 @@
         <div id="home-screen">
             <div class="img-cont">
                 <img class="img-fluid" src="images/tangrid_logo.png" alt="logo">
-                <h5>A game of colors and triangles</h5>
+                <h5>A game of colors and triangles v.0.5.1</h5>
             </div>
             <div id="home-message">
                 <h3>Press Start!</h3>
@@ -78,11 +78,13 @@
             <div id="panel">
                 <button class="btn command-btn"id="rotate-btn" type="button" disabled title="
                 Rotate 90 degrees clockwise the selected title">Rotate</button>
-                <button class="btn command-btn"id="undo-btn" type="button" disabled title="Undo the last move">Undo last Move</button>
                 <button class="btn command-btn"id="discard-btn" type="button" disabled title="Discard 2 tiles, Draw 2 tiles and Pass the turn">Discard & Pass</button>
                 <button class="btn command-btn"id="end-btn" type="button" disabled title="Abandon a game. You loose even if you are currently leading the score">Surrender</button>
                 <button class="btn command-btn"id="restart-btn" type="button" disabled tile="Start a new game with the current settings">Start a new Game</button>
                 <button class="btn command-btn"id="exit-btn" type="button" disabled tile="End a game and exit to the main screen">Exit</button>
+            </div>
+            <div id="details">
+                <ul id="details-ul" class="list-group"></ul> 
             </div>
         </div>
         <!-- MIDDLE SIDE-->
@@ -94,7 +96,21 @@
                 <div id="player2-hand"></div>
             </div>
             <!-- GRID -->
+            <div class="letters">
+                <div class="letter">A</div>
+                <div class="letter">B</div>
+                <div class="letter">C</div>
+                <div class="letter">D</div>
+                <div class="letter">E</div>
+            </div>
             <div id="grid">
+                <div class="numbers">
+                    <div class="number">1</div>
+                    <div class="number">2</div>
+                    <div class="number">3</div>
+                    <div class="number">4</div>
+                    <div class="number">5</div>
+                </div>
                 <div id="score-grid"></div>
                 <div id="grid-row-0"></div>
                 <div id="grid-row-1"></div>
@@ -106,19 +122,34 @@
             <div id="player1-side">
                 <h3 id="p1-name">Player 1</h3>
                 <div id="player1-hand"></div>
+                <div id="pass" role="button"><h5>Press SPACE or click here to pass the turn...</h5></div>
             </div>
         </div>
         <!-- RIGHT SIDE -->
         <div id="right-side">
-            <div id="time-div">Time Elapsed: <span id="time">00:00</span></div>
-            <div id="now-playing"></div>
             <div id="score">
                 <h3>SCORE</h3>
                 <h1><span id="p1-score">0</span> | <span id="p2-score">0</span></h1>
             </div>
+
+            <div class="box">         
+                <h5 class="text-center">TIME ELAPSED<br>
+                    <span id="time">00:00</span>
+                </h5>
+            </div>
+
+            <div class="box">         
+                <h5 class="text-center">NOW PLAYING
+                    <div>Player <span id="now-playing">1</span></div>
+                </h5>
+            </div>
+            
             <!-- MESSAGES -->
-            <h4 class="text-center">MESSAGES</h4>
-            <div id="messages"></div>
+            <div class="box">         
+                <h5 class="text-center">MESSAGES</h5>
+                <div id="messages"></div>
+            </div>
+
         </div>
         <div id="modal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -126,7 +157,7 @@
               <div class="modal-content">
                 <div class="modal-body">
                   <h1 id="modal-label"></h1>
-                  <p id="modal-text"></p>
+                  <h4 class="text-center" id="modal-text"></h4>
                 </div>
                 <div class="modal-footer">
                     <button id="confirm-btn" type="button" class="btn btn-default">OK</button>

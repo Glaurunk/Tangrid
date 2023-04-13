@@ -23,11 +23,13 @@ function SelectTile(code)
     {
         const i = parseInt(code) - 1;
         const tile = p1Hand[i];
-        const card = document.getElementById(tile.id.toString());
-        cards.forEach(card => card.classList.remove('selected'));
-        card.classList.add('selected');
-        selectedT = card;
-        console.log("selected tile " + card.dataset.label + " with id " + card.id);
+        if (tile) {
+            const card = document.getElementById(tile.id.toString());
+            cards.forEach(card => card.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedT = card;
+            console.log("selected tile " + card.dataset.label + " with id " + card.id);
+        } else return;
     }
 }
 
@@ -37,24 +39,13 @@ function RotateTile()
     if (!selectedT)  { 
         DisplayMessage('Please select a tile first!');
         return;
-    }
-    if (playerOrder === 1 && selectedT.dataset.placing != "player1-hand") DisplayMessage('You can rotate only your own tiles');
-    else {
+    } else {
         if (!selectedT.style.rotate || selectedT.style.rotate == "0deg") selectedT.style.rotate = "90deg";
         else if (selectedT.style.rotate == "90deg") selectedT.style.rotate = "180deg";
         else if (selectedT.style.rotate== "180deg") selectedT.style.rotate = "270deg";
         else if (selectedT.style.rotate== "270deg") selectedT.style.rotate = "0deg";
         RotateString(selectedT.dataset.label);
     }
-}
-
-// Moves the last character inside a 4 characters string to the front
-function RotateString(string)
-{
-    if (string.length != 4) return;
-    var b = string.substr(0,3);
-    var a = string.substr(3,1);
-    selectedT.dataset.label = a+b;
 }
 
 // Keyboard Input
@@ -67,11 +58,15 @@ function KeyInputHandler(code)
         case '4':
         case '5':
         case '6':
+        case '7':
             SelectTile(code);
             break;
         case 'r':
         case 'R':
             RotateTile();
+            break;
+        case ' ':
+            PassTheTurn();
             break;
         default:
             console.log(code);
@@ -83,146 +78,19 @@ function KeyInputHandler(code)
 function DrawCard(player)
 {
     let rand = 0; 
-    if (player == 1) {
+    if (player === 1) {
         rand = Math.floor(Math.random() * p1Tiles.length);
         p1Hand.push(p1Tiles[rand]);
         DrawPlayerHand(1);
     }
-    if (player == 2) {
+    if (player === 2) {
         rand = Math.floor(Math.random() * p2Tiles.length);
         p2Hand.push(p2Tiles[rand]);
         DrawPlayerHand(2);
     }
     cards = Array.from(document.getElementsByClassName('card'));
-    if (activePlayer === 1) DisplayMessage("Player 1 draws one card");
+    if (player === 1) DisplayMessage("Player 1 draws one card");
     else DisplayMessage("The Computer draws one card");
-}
-
-// Checks if a placing position is valid by comparing neighboring labels
-function CheckPlacement1(index)
-{
-    let position = true;                // the returned variable
-    let black = false;                  // true if the matching sides are black
-    let colorMatch = false;             // true at least one matching side is with color
-    let edge = false;                   // true if color faces the outside
-    let compT,selT;                     // the characters to compare for matching.
-    let match = [];                     // an array of matching pairs
-    let adj = GetAdjacentTiles(index);  // The adjacent tiles
-    let val = [];                       // the non empty neighbors
-
-    // check if the neighboring tiles are empty and pass the rest to a new array
-    for (let i=0; i<adj.length; i++) {
-        if (adj[i].tile.label != 'BBBB') val.push(adj[i]);
-    }
-        
-    //if none remain the neighboring tiles are empty break with msg
-    if (val.length == 0) {
-        if (activePlayer === 1) DisplayMessage('Must place next to an existing tile'); 
-        else console.log('Must place next to an existing tile');
-        return false;
-    }
-
-    //if there are neighboring tiles check for matching
-    const top = val.find(tile => { return tile.pos == 'top'});
-    if (top) {
-        //console.log('top neighbor label: ' + top.tile.label);
-        compT = top.tile.label.substr(2,1);
-        selT = selectedT.dataset.label.substr(0,1);
-        //console.log("comparing top: " + compT + '=' + selT);
-        if (selT != compT) position = false;
-        if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
-        if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        const newP = new Pair('top',compT+selT);
-        if (newP.type != 'BB') colorMatch = true;
-        if (position === true) match.push(newP);
-    }
-
-    const bottom = val.find(tile => { return tile.pos == 'bottom'});
-    if (bottom) {
-        //console.log('bottom neighbor label: ' + bottom.tile.label);
-        compT = bottom.tile.label.substr(0,1);
-        selT = selectedT.dataset.label.substr(2,1);
-        //console.log("comparing bottom: " + compT + '=' + selT);
-        if (selT != compT) position = false;
-        if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
-        if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        const newP = new Pair('bottom',compT+selT);
-        if (newP.type != 'BB') colorMatch = true;
-        if (position === true) match.push(newP);
-    }
-
-    const right = val.find(tile => { return tile.pos == 'right'});
-    if (right) {
-        //console.log('right neighbor label: ' + right.tile.label);
-        compT = right.tile.label.substr(3,1);
-        selT = selectedT.dataset.label.substr(1,1);
-        //console.log("comparing right: " + compT + '=' + selT);
-        if (selT != compT) position = false;
-        if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
-        if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        const newP = new Pair('right',compT+selT);
-        if (newP.type != 'BB') colorMatch = true;
-        if (position === true) match.push(newP);
-    }
-
-    const left = val.find(tile => { return tile.pos == 'left'});
-    if (left) {
-        //console.log('left neighbor label: ' + left.tile.label);
-        compT = left.tile.label.substr(1,1);
-        selT = selectedT.dataset.label.substr(3,1);
-        //console.log("comparing left: " + compT + '=' + selT);
-        if (selT != compT) position = false;
-        if (selT == 'J' || compT == 'J' && selT != 'B' && compT != 'B') position = true;
-        if (selT == compT && selT == 'B' && compT == 'B') black = true;
-        const newP = new Pair('left',compT+selT);
-        if (newP.type != 'BB') colorMatch = true;
-        if (position === true) match.push(newP);
-    }
-
-    // Check if the tile faces the edge
-    if ((parseInt(index)+GRID_SIZE)%GRID_SIZE === 0) {
-        //console.log('FACING TOP');
-        if (selectedT.dataset.label.substr(0,1) != 'B') edge = true;;
-    }
-
-    if (parseInt(index) > ((GRID_SIZE*GRID_SIZE)-1) - GRID_SIZE) {
-        //console.log('FACING RIGHT');
-        if (selectedT.dataset.label.substr(1,1) != 'B') edge = true;;
-    }
-
-    if ((parseInt(index)+GRID_SIZE)%GRID_SIZE === GRID_SIZE-1) { 
-        //console.log('FACING BOTTOM');
-        if (selectedT.dataset.label.substr(2,1) != 'B') edge = true;;
-    }
-
-    if (parseInt(index) < GRID_SIZE) { 
-       // console.log('FACING LEFT');
-        if (selectedT.dataset.label.substr(3,1) != 'B') edge = true;;
-    }
-
-    //if the tile is facing the edge break with msg
-    if (edge === true) {
-        if (activePlayer === 1) DisplayMessage('A color side cannot face the edge');
-        else console.log('A color side cannot face the edge');
-        return false;
-    }
-
-    // If the neighboring colors do not match break with msg
-    if (position === false) { 
-        if (activePlayer === 1) DisplayMessage('Neighboring colors must match');
-        else console.log('Neighboring colors must match');
-        return false;
-    };
-
-    // If the player tries to match black tiles break with msg
-    if (black === true && colorMatch === false) {
-        if (activePlayer === 1) DisplayMessage('You must match with at least one color side');
-        else console.log('You must match with at least one color side');
-        return false;
-    }
-    //console.log("colorMath =" + colorMatch);
-
-    return match;
 }
 
 //Validates a move
@@ -341,78 +209,77 @@ function GetAdjacentTiles(index)
 }
 
 // Updates the score for a player
-function UpdateScore(index,match,player,value)
+function UpdateScore()
 {
+    console.log('udating score for player ' + activePlayer);
+    console.log(globalMatches);
     let p1s = 0;        // p1 score
     let p2s = 0;        // p2 score
-    let m = 0;          // number of sides matched
-    console.log('m='+m);
-    let message = ""; 
-    let ss = parseInt(value) > 1 ? 's' : '';
+    let value = 0;      // The placed tiles value
+    const player = activePlayer;
+    
+    // Add the base tile value to the score
+    value = selectedT.dataset.value;
+    const ss = parseInt(value) > 1 ? 's' : '';   // to handle single/plural
 
     if (player == 1) { 
         p1s += parseInt(value);
-        message += '&bull; Player 1 places a ' + value + '-color' + ss + ' tile worth ' + value + ' point' + ss + '. '; 
+        DisplayDetails('Player 1 places a ' + value + '-color' + ss + ' tile worth ' + value + ' point' + ss); 
     }
     if (player == 2) { 
         p2s += parseInt(value);
-        message += '&bull; The Computer places a ' + value + '-color' + ss + ' tile worth ' + value + ' point' + ss + '. '; 
-
+        DisplayDetails('The Computer places a ' + value + '-color' + ss + ' tile worth ' + value + ' point' + ss); 
     }
 
-    for (let i=0; i<match.length; i++) {
-        switch(match[i].type) {
+    // Add the matces colors to the score
+    for (let i=0; i<globalMatches.length; i++) {
+        switch(globalMatches[i]) {
             case '11':
                 if (player == 1) {
                     p1s += 2;
-                    message += "<br>&bull; Color match: bonus 2 points.";
+                    DisplayDetails("Color match: bonus 2 points");
                 }
                 if (player == 2) { 
                     p2s -= 2;
-                    message += "<br>&bull; Rival color match: penalty -2 points.";
+                    DisplayDetails("Rival color match: penalty -2 points");
                 }
-                m++;
                 break;
             case '22':
                 if (player == 1) {
                     p1s -= 2;
-                    message += "<br>&bull; Rival color match: penalty -2 points.";
+                    DisplayDetails("Rival color match: penalty -2 points");
                 }
                 if (player == 2) { 
                     p2s += 2;
-                    message += "<br>&bull; Color match: bonus 2 points.";
+                    DisplayDetails("Color match: bonus 2 points");
                 }
-                m++;
                 break;
             case '1J':
             case 'J1':
                 if (player == 1) {
                     p1s += 1;
-                    message += "<br>&bull; Color match with Joker: bonus 1 point.";
+                    DisplayDetails("Color match with Joker: bonus 1 point");
                 }
                 if (player == 2) { 
                     p2s -= 1;
-                    message += "<br>&bull; Opposite color match with Joker: penalty -1 point.";
+                    DisplayDetails("Opposite color match with Joker: penalty -1 point");
                 }
-                m++;
                 break;
             case '2J':
             case 'J2':
                 if (player == 1) {
                     p1s -= 1;
-                    message += "<br>&bull; Opposite color match with Joker: penalty -1 point.";
+                    DisplayDetails("Opposite color match with Joker: penalty -1 point");
                 }
                 if (player == 2) { 
                     p2s += 1;
-                    message += "<br>&bull; Color match with Joker: bonus 1 point.";
+                    DisplayDetails("Color match with Joker: bonus 1 point");
                 }
-                m++;
                 break;
             case 'JJ':
                 if (player == 1) p1s += 3;
                 if (player == 2) p2s += 3;
-                message += "<br>&bull; Joker match: bonus 3 points";
-                m++;
+                DisplayDetails("Joker match: bonus 3 points");
                 break;
             case 'BB':
             case 'B1':
@@ -426,43 +293,36 @@ function UpdateScore(index,match,player,value)
                 console.log('Error in UpdateScore. Invalid pair');
                 break;
         }
-        console.log('m='+m);
-        if (m == 1)  {
+    }
+    if (globalMatches.length > 1)
+    {
+        if (globalMatches.length === 2)
+        {
             if (player == 1) p1s *= 2;
-            if (player == 2) p2s *= 2;
-            message += '<br>&bull; Double Match! Score 2X!';
-        }
-        else if (m == 2)  {
+            else if (player == 2) p2s *= 2;
+            DisplayDetails('Double Match! Score 2X!');
+        } 
+        else if (globalMatches.length === 3)
+        {
             if (player == 1) p1s *= 3;
-            if (player == 2) p2s *= 3;
-            message += '<br>&bull; Triple Match! Score 3X!';
-
+            else if (player == 2) p2s *= 3;
+            DisplayDetails('Triple Match! Score 3X!');
         }
-        else if (m == 3)  {
+        else if (globalMatches.length === 4)
+        {
             if (player == 1) p1s *= 5;
-            if (player == 2) p2s *= 5;
-            message += '<br>&bull; Full Match! Score 5X!';
+            else if (player == 2) p2s *= 5;
+            DisplayDetails('Full Match! Score 5X!');
         }
-
     }
     p1Score += p1s;
     p2Score += p2s;
     p1ScoreDiv.innerHTML = p1Score;
     p2ScoreDiv.innerHTML = p2Score;
-    if (player == 1) message += '<br>&bull; Player 1 scores: ' + p1s + ' points.'; 
-    if (player == 2) message += '<br>&bull; The Computer scores: ' + p2s + 'points.';
-    console.log(message);
-    DisplayMessage(message); 
-}
-
-// reveals player 2 hand
-function FlipP2Hand(facing)
-{
-    for (let i=0; i<p2Hand.length; i++)
-    {
-        p2Hand[i].facing = facing;
-    }
-    //DrawPlayerHand(2);  
+    if (player == 1) DisplayDetails('Player 1 scores: ' + p1s + ' points'); 
+    else if (player == 2) DisplayDetails('The Computer scores: ' + p2s + ' points');
+    // reset the global matches
+    globalMatches = [];
 }
 
 // Sets the sequence of actions for Player 2
@@ -479,20 +339,20 @@ function Player2Turn()
 function ResuffleAndPass(player)
 {
     if (player === 1) {
+        DisplayMessage("The player discards and draws 6");
         p1Hand.splice(0,p1Hand.length);
         PopulatePlayersHand(1);
         DrawPlayerHand(1);
         cards = Array.from(document.getElementsByClassName('card')); 
-        setTimeout(()=>{ SetActivePlayer(2) },1000);
-    } else  {
-        DisplayMessage("The Computer discards and draws 6 <br> The Computer passes the turn");
+    } else if (player === 2) {
+        DisplayMessage("The Computer discards and draws 6");
+        p2thinkDiv.classList.remove('shown');
         p2Hand.splice(0,p2Hand.length);
         PopulatePlayersHand(2);
         DrawPlayerHand(2);
         cards = Array.from(document.getElementsByClassName('card')); 
-        setTimeout(()=>{ SetActivePlayer(1) },1000);
     }
-
+    TogglePassDiv(1);
 }
 
 // accepts a targets neighbors and returns the matches with the selected Tile
@@ -554,7 +414,23 @@ function CheckIfMatch(pair)
         console.log(a + '===' + b + ' ---> false');  
         return false;
     } 
-    else if (a === b || a === 'J' || b === 'J') match = true;
-    console.log(a + '===' + b + ' ---> ' + match);
+    else if (a === b || a === 'J' || b === 'J') {
+        match = true;
+        // Pass the pairs to a global array for score tracking
+        globalMatches.push(pair);
+        console.log(a + '===' + b + ' ---> ' + match);
+    }
     return match;    
+}
+
+// Prompts the user to pass the turn
+function PassTheTurn()
+{
+    if (gameStarted === false || turnHasEnded === false) return;
+    else {
+        cards.forEach(card => card.classList.remove('selected1'));
+        TogglePassDiv(0);
+        let swapPlayer = activePlayer === 1 ? 2 : 1;
+        SetActivePlayer(swapPlayer);
+    }
 }

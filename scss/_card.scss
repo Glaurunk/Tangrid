@@ -4,6 +4,7 @@
     width: 100px;
     height: 100px;
     border: 0;
+    background-color: transparent;
     &.selected {
       .card__inner {
         border: 3px solid var(--c-selected);
@@ -21,7 +22,7 @@
     }
     &.selected3 {
       .card__inner {
-        border: 5px solid var(--c-selected3);
+        border: 3px solid var(--c-selected3);
       }
     }
     &.selected4 {
@@ -53,6 +54,7 @@
         justify-content: center;
         align-items: center;
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden; /* Safari */
       }
       .card__back {
         position: absolute;
@@ -65,6 +67,8 @@
         justify-content: center;
         align-items: center;
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden; /* Safari */
+        transform: rotateY(180deg);
       }
     }
 }

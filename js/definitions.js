@@ -104,10 +104,11 @@ let activePlayer = 1;
 let p1Score = 0;
 let p2Score = 0;
 let playerOrder = 1;
-let difficulty = 1;
-let timer;              // assigned inside CountTime()
-let confirmCommand;     // defines the confirm button's functionality
-
+let difficulty = 1;         // 1 easy, 2 medium, 3 difficult
+let timer;                  // assigned inside CountTime()
+let confirmCommand;         // defines the confirm button's functionality
+let globalMatches = [];     // the number of neighboring sides of a placed tile
+let turnHasEnded = false;   // used to pass the turn
 //TILES
 //The initial grid state
 const gridTiles = [];
@@ -115,15 +116,8 @@ for (let i=0; i<GRID_SIZE*GRID_SIZE; i++) {
     const t = new Tile("BBBB",0,0,C_BLACK);
     gridTiles.push(t);
 }
-// gridTiles[7] = new Tile("B212");
-// gridTiles[10] = new Tile("B212");
-// gridTiles[11] = new Tile("1J1B");
-gridTiles[12] = new Tile("1212");
-// gridTiles[13] = new Tile("121B");
-// gridTiles[14] = new Tile("12B2");
-// gridTiles[17] = new Tile("22B2");
 
-   
+gridTiles[12] = new Tile("1212");
 
 // Player one pool of cards
 const p1Tiles = [ 
@@ -195,8 +189,10 @@ const p2ScoreDiv = document.getElementById("p2-score");
 const p2thinkDiv = document.getElementById('player2-thinking');
 const modalText = document.getElementById('modal-text');
 const modalLabel = document.getElementById('modal-label');
-  const timeSpan = document.getElementById('time');
-
+const timeSpan = document.getElementById('time');
+const detailsUl = document.getElementById('details-ul');
+const boxes = Array.from(document.getElementsByClassName('box'));
+const passDiv = document.getElementById('pass');
 // UI BUTTONS
 const settingsBtn = document.getElementById("settings-btn");
 const rulesBtn = document.getElementById("rules-btn");
@@ -207,7 +203,6 @@ const confirmBtn = document.getElementById('confirm-btn');
 const startBtn = document.getElementById("start-btn");
 const endBtn = document.getElementById("end-btn");
 const restartBtn = document.getElementById("restart-btn");
-const undoBtn = document.getElementById("undo-btn");
 const rotateBtn = document.getElementById("rotate-btn");
 const exitBtn = document.getElementById("exit-btn");
 const discardBtn = document.getElementById("discard-btn");
