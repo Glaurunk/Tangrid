@@ -45,7 +45,7 @@ function CheckSettings()
 ////// INITIALIZATION
 ///////////////////////////////////////////////////////
 
-//DetectDisplay();
+DetectDisplay();
 Clear();
 DisplayYear();
 // shuffle deck and draw cards
