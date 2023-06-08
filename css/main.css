@@ -232,6 +232,12 @@ body .small-window-msg {
   text-align: center;
 }
 
+#black-screen {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--c-black);
+}
+
 #settings-btn {
   position: absolute;
   top: 1rem;
